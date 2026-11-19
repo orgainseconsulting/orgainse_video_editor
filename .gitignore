@@ -1,0 +1,6 @@
+/.local/
+/studio-data/
+__pycache__/
+*.py[cod]
+.venv/
+.env

@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ORGAINSE Video Editor</title>
+    <link rel="stylesheet" href="/studio.css" />
+  </head>
+  <body>
+    <header>
+      <div class="wordmark">
+        <span class="mark" aria-hidden="true">◩</span> ORGAINSE
+        <span class="subbrand">Video Editor</span>
+      </div>
+      <span id="runtime">Checking local tools…</span>
+    </header>
+    <div class="workspace">
+      <aside>
+        <div class="railhead">
+          <h2>Productions</h2>
+          <button id="new" class="tiny" aria-label="New production">＋</button>
+        </div>
+        <nav id="jobs" aria-label="Saved productions"></nav>
+      </aside>
+      <main>
+        <section id="editor">
+          <p class="eyebrow">PRODUCTION DESK</p>
+          <h1>New production</h1>
+          <form id="form">
+            <div class="modes" role="group" aria-label="Job type">
+              <button
+                type="button"
+                data-mode="create"
+                class="selected"
+                aria-pressed="true"
+              >
+                Create a video</button
+              ><button type="button" data-mode="shorts" aria-pressed="false">
+                Cut into shorts
+              </button>
+            </div>
+            <label
+              >Production name<input
+                id="title"
+                maxlength="120"
+                placeholder="Founder walkthrough"
+            /></label>
+            <label id="brieflabel"
+              ><span>Scene brief</span
+              ><textarea
+                id="brief"
+                rows="3"
+                maxlength="4000"
+                placeholder="Open with the founder, cut to the product screen, then end on the call to action."
+              ></textarea>
+            </label>
+            <div class="paired">
+              <label
+                >Source recording<input
+                  type="file"
+                  id="media"
+                  accept="video/*,.mkv,.mts" /><small
+                  id="media-note"
+                ></small></label
+              ><label
+                ><span id="extralabel">Product screenshot</span
+                ><input
+                  type="file"
+                  id="image"
+                  accept=".png,.jpg,.jpeg,.webp" /><small
+                  id="image-note"
+                ></small
+              ></label>
+            </div>
+            <div class="create-only">
+              <label
+                >Website or Figma frame URL<input
+                  type="url"
+                  id="url"
+                  placeholder="https://your-product.com"
+              /></label>
+              <label
+                >Narration script<textarea
+                  id="script"
+                  rows="3"
+                  maxlength="40000"
+                  placeholder="Spoken locally with a Windows voice. Leave blank to keep the recording’s audio."
+                ></textarea>
+              </label>
+            </div>
+            <details id="settings">
+              <summary>Export settings</summary>
+              <div class="settings">
+                <label
+                  >Format<select id="ratio">
+                    <option>16:9</option>
+                    <option>9:16</option>
+                    <option>4:5</option>
+                    <option>1:1</option>
+                  </select></label
+                >
+                <label
+                  ><span id="targetlabel">Target seconds</span
+                  ><input
+                    type="number"
+                    id="seconds"
+                    min="1"
+                    max="14400"
+                    value="30"
+                    required
+                /></label>
+                <label class="shorts-only"
+                  >Number of shorts<input
+                    type="number"
+                    id="count"
+                    min="1"
+                    max="24"
+                    value="3"
+                /></label>
+                <label
+                  >Framing<select id="framing">
+                    <option value="fit">Keep full frame</option>
+                    <option value="crop">Center crop</option>
+                  </select></label
+                >
+                <label class="create-only"
+                  >Scene planner<select id="planner">
+                    <option value="model">Local AI</option>
+                    <option value="template">Script template</option>
+                  </select></label
+                >
+                <label
+                  >Timed transcript<input
+                    type="file"
+                    id="transcript"
+                    accept=".srt,.vtt,.json" /><small
+                    id="transcript-note"
+                  ></small
+                ></label>
+                <label class="check"
+                  ><input type="checkbox" id="captions" checked /> Burn in
+                  captions</label
+                ><label class="check"
+                  ><input type="checkbox" id="draft" /> Draft resolution</label
+                >
+              </div>
+            </details>
+            <div class="actions">
+              <button class="primary" type="submit" id="submit">
+                Render video <span aria-hidden="true">↗</span></button
+              ><span id="actioninfo">Saves on this PC</span>
+            </div>
+            <p class="error" id="error" role="alert"></p>
+          </form>
+        </section>
+        <section id="detail" hidden>
+          <p class="eyebrow">PRODUCTION</p>
+          <h1 id="jobtitle"></h1>
+          <p id="progress" role="status"></p>
+          <div id="outputs"></div>
+          <div class="actions">
+            <button class="secondary" id="revise">Reopen brief</button
+            ><a id="plan" hidden>View edit plan</a>
+          </div>
+        </section>
+      </main>
+      <section class="monitor">
+        <div class="railhead">
+          <h2>Monitor</h2>
+          <span id="monitorformat">16:9</span>
+        </div>
+        <div class="screen">
+          <video id="player" hidden controls preload="metadata"></video>
+          <div id="standby">
+            <span class="frameword">ORGAINSE</span>
+            <div class="rule"></div>
+            <small>LOCAL VIDEO STUDIO</small>
+          </div>
+        </div>
+        <div id="playername">Preview</div>
+        <div class="toolhead">WORKSTATION</div>
+        <ul id="tools"></ul>
+      </section>
+    </div>
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,2 @@
+third_party/digital_samba/** -text
+*.cmd text eol=crlf
