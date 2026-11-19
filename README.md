@@ -12,7 +12,7 @@ A Windows video production studio that runs on your workstation. Give it a recor
 powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-windows.ps1
 ```
 
-The **Local AI** planner uses a model imported from GGUF into Ollama at `127.0.0.1:11434`. Start Ollama before using that planner. A job reports an unavailable model and can be reopened with **Script template**. Supplied material, narration, subtitles, edit plans and exports stay in local storage. New external URLs need connectivity during capture. Cached screenshots and local files can be reused offline. GitHub contains the application source.
+The **Local AI** planner uses a model imported from GGUF into Ollama at `127.0.0.1:11434`. Start Ollama before using that planner. A job reports an unavailable model and can be reopened with **Script template**. Supplied material, narration, subtitles, edit plans and exports stay in local storage. New external URLs need connectivity during capture. Cached screenshots and local files can be reused offline.
 
 ### Create a video
 
@@ -27,6 +27,14 @@ The studio exports H.264 video and AAC audio in MP4. Choose 16:9, 9:16, 4:5 or 1
 Choose **Cut into shorts**, attach the full recording and describe the topics you want. Set the target seconds and count under **Export settings**. The studio transcribes the recording locally unless you supply an SRT, VTT or supported timed JSON. Transcripts are cached across jobs for the same asset and speech model.
 
 The selector ranks complete passages by topic overlap and duration, avoids overlapping or near-duplicate selections, and returns the available number of distinct clips. Each clip has source in/out times, an MP4 and timed SRT. **Keep full frame** preserves the entire original image on the output canvas. **Center crop** fills the frame. Recordings with multiple speakers benefit from reviewing portrait framing. Use **Adjust cut** to render an individual time range as a new revision. **Reopen brief** reuses the original assets for a different edit.
+
+### Brand a production
+
+Under **Export settings → Brand**, choose **ORGAINSE Consulting**, **ORQYNE**, or **Unbranded**. The default selects ORQYNE when its name appears in the title, brief, narration or URL. Other productions use ORGAINSE Consulting.
+
+**Match the background** chooses a mark per shot. ORQYNE title cards use the wordmark with the company credit. Product footage uses a compact wordmark. The renderer samples the logo area after framing and adds a dark backing when the area has mixed contrast. To use a particular wordmark or symbol throughout an export, choose its numbered variant under **Logo**. The edit plan records the file used in each shot or short.
+
+The same controls work from the terminal, for example `--brand orqyne --logo 7` for the gradient product symbol. All artwork stays on this workstation during rendering.
 
 ### Use from Codex or a terminal
 

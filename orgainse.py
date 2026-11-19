@@ -58,6 +58,10 @@ def main():
         cmd = sub.add_parser(mode)
         cmd.add_argument("--title", required=True)
         cmd.add_argument("--brief", default="")
+        cmd.add_argument("--brand", choices=["auto", "orgainse", "orqyne", "none"], default="auto")
+        cmd.add_argument(
+            "--logo", default="auto", help="Automatic contrast or a variant number in the brand catalog"
+        )
         cmd.add_argument("--video", required=mode == "shorts")
         cmd.add_argument("--transcript")
         cmd.add_argument(
@@ -88,6 +92,8 @@ def main():
             "mode": args.command,
             "title": args.title,
             "brief": args.brief,
+            "brand": args.brand,
+            "logo": args.logo,
             "ratio": args.ratio,
             "seconds": args.seconds,
             "draft": args.draft,

@@ -9,6 +9,7 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from core import IMAGES, MEDIA, RATIOS, duration, ff, probe, run, save, source
+from branding import brand_settings, composite, framing_filter
 from planner import make_plan
 from figma_source import frame_ref, fetch_frame
 from speech import captions, choose_shorts, clipped, srt, transcript_for, tts
@@ -80,7 +81,7 @@ def ass_time(seconds):
     return f"{h}:{m:02}:{s:02}.{cs:02}"
 
 
-def make_overlay(path, w, h, length, headline, cues, card, scene_no):
+def make_overlay(path, w, h, length, headline, cues, card):
     margin = round(w * 0.065)
     base = min(w, h)
 
@@ -92,14 +93,13 @@ def make_overlay(path, w, h, length, headline, cues, card, scene_no):
         "[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, "
         "Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\n"
     )
-    header += style("Brand", max(13, int(base * 0.029)), "&H0080ECFA", "&H00171413", 7, round(h * 0.06), 1)
     header += style(
         "Title",
         max(24, int(base * (0.085 if card else 0.055))),
         "&H00F1F5F6",
         "&H00171413",
         4 if card else 7,
-        round(h * 0.15),
+        round(h * 0.19),
         2,
     )
     header += style(
@@ -123,7 +123,6 @@ def make_overlay(path, w, h, length, headline, cues, card, scene_no):
         if b > a and text.strip():
             events.append(f"Dialogue: 0,{ass_time(a)},{ass_time(b)},{style},,0,0,0,,{text}")
 
-    add(0, length, "Brand", "ORGAINSE" if not card else f"ORGAINSE  /  {scene_no:02d}")
     if headline:
         label = safe(headline)
         if card:
@@ -154,13 +153,13 @@ def encode(
     has_audio,
     headline,
     cues,
-    scene_no,
+    branding,
     framing,
     motion="still",
 ):
     card = visual is None
     overlay = folder / (name + ".ass")
-    make_overlay(overlay, w, h, length, headline, cues, card, scene_no)
+    make_overlay(overlay, w, h, length, headline, cues, card)
     args = ["-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-filter_complex_threads", "2"]
     if card:
         args += ["-f", "lavfi", "-i", f"color=c=0x162329:s={w}x{h}:r=30"]
@@ -176,21 +175,25 @@ def encode(
     else:
         args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
         audio = "1:a:0"
+    framing_ops = framing_filter(w, h, not card and framing == "crop" and visual.suffix.lower() not in IMAGES)
     if card:
+        accent = {"orqyne": "0x0BAAFF", "orgainse": "0x39B29A", "none": "0xC7D0D4"}[branding[0]]
         img = (
-            f"[0:v]drawbox=x=0:y=0:w={w}:h={max(3,int(h*.009))}:color=0xF6D77D:t=fill,"
-            f"drawbox=x={int(w*.065)}:y={int(h*.70)}:w={int(w*.10)}:h={max(3,int(h*.005))}:color=0xF6D77D:t=fill"
+            f"[0:v]drawbox=x=0:y=0:w={w}:h={max(3,int(h*.009))}:color={accent}:t=fill,"
+            f"drawbox=x={int(w*.065)}:y={int(h*.70)}:w={int(w*.10)}:h={max(3,int(h*.005))}:color={accent}:t=fill"
         )
-    elif framing == "crop" and visual.suffix.lower() not in IMAGES:
-        img = f"[0:v]scale={w}:{h}:force_original_aspect_ratio=increase,crop={w}:{h}"
     else:
-        img = f"[0:v]scale={w}:{h}:force_original_aspect_ratio=decrease:force_divisible_by=2,pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=0x172026"
+        img = "[0:v]" + framing_ops
     img += ",setsar=1,fps=30"
     if not card and motion in ("push-in", "pull-back"):
         step = f"0.12*min(on/{max(1,round(length*30)-1)},1)"
         zoom = "1+" + step if motion == "push-in" else "1.12-" + step
         img += f",zoompan=z='{zoom}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=1:s={w}x{h}:fps=30"
-    img += f",tpad=stop_mode=clone:stop_duration={length:.4f},ass={overlay.name},format=yuv420p[v]"
+    img += f",tpad=stop_mode=clone:stop_duration={length:.4f}"
+    img, applied = composite(
+        args, img, 1 if audio == "0:a:0" else 2, *branding, visual, start, length, w, h, framing_ops
+    )
+    img += f",ass={overlay.name},format=yuv420p[v]"
     args += [
         "-filter_complex",
         img,
@@ -223,7 +226,7 @@ def encode(
         name + ".mp4",
     ]
     ff("ffmpeg", *args, cwd=folder)
-    return folder / (name + ".mp4")
+    return applied
 
 
 def verify(path, w, h, expected):
@@ -240,6 +243,7 @@ def verify(path, w, h, expected):
 
 
 def build(request, folder, report):
+    branding = brand_settings(request)
     video = source(request["media"], MEDIA)
     image = source(request["image"], IMAGES)
     sidecar = source(request["transcript"], {".json", ".srt", ".vtt"})
@@ -300,7 +304,7 @@ def build(request, folder, report):
             a, b = cut["start"], cut["end"]
             lines = captions(clipped(cues, a, b))
             name = f"short-{i:02}"
-            encode(
+            cut["branding"] = encode(
                 folder,
                 name,
                 w,
@@ -312,10 +316,11 @@ def build(request, folder, report):
                 sounds,
                 "",
                 lines if request["captions"] else [],
-                i,
+                branding,
                 request["framing"],
             )
             record(name, cut["title"], b - a, lines, a, b)
+        save(folder / "edit-plan.json", {"mode": "shorts", "source": request["media"], "clips": cuts})
         return outputs
     if request["url"] and not image:
         report("Capturing the supplied website")
@@ -358,7 +363,7 @@ def build(request, folder, report):
         # On text-only scenes avoid printing the same narration twice.
         title = shot["headline"] or (request["title"] if picture is None else "")
         burned = lines if request["captions"] and not (picture is None and title == shot["voice"]) else []
-        encode(
+        shot["branding"] = encode(
             folder,
             f"scene-{i:03}",
             w,
@@ -370,7 +375,7 @@ def build(request, folder, report):
             sounds,
             title,
             burned,
-            i + 1,
+            branding,
             request["framing"],
             shot.get("motion", "still"),
         )

@@ -23,6 +23,10 @@ The following creators informed the production research. Their attribution appea
 - **haidrrrry** for the motion graphics design and review workflow. [Remotion skill](https://github.com/haidrrrry/claude-remotion-skill)
 - **Dmitriy Kovalenko** and FFrames contributors for their Rust/SVG approach to local video rendering. [FFrames](https://github.com/dmtrKovalenko/fframes)
 
+### Brand artwork
+
+ORGAINSE Consulting supplied the seven corporate logos and nine ORQYNE product logos in the brand directory. The ORQYNE title-card artwork includes the original “A product of ORGAINSE CONSULTING” credit. Third-party code license notices apply to their respective upstream code.
+
 ### Workstation dependencies
 
 The installer retrieves tools and model assets separately. Keep their upstream notices when redistributing any of them. Verify rights to source recordings, music, fonts, brand assets and spoken voices for the specific production.

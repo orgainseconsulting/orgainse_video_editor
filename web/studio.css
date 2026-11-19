@@ -44,8 +44,8 @@ header {
   letter-spacing: 0.03em;
 }
 .mark {
-  color: var(--lime);
-  font-size: 28px;
+  width: clamp(110px, 13vw, 172px);
+  height: auto;
 }
 .subbrand {
   font-weight: 400;
@@ -297,10 +297,8 @@ a {
   text-align: left;
 }
 .frameword {
-  font-weight: 800;
-  color: #f2f4e7;
-  font-size: clamp(21px, 2.5vw, 55px);
-  letter-spacing: -0.06em;
+  width: 85%;
+  height: auto;
 }
 .rule {
   width: 25%;

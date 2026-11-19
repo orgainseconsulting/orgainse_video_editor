@@ -1,0 +1,166 @@
+{
+  "orgainse": {
+    "1": {
+      "file": "logo-1.png",
+      "label": "Full color / navy",
+      "crop": [
+        16,
+        17,
+        1640,
+        339
+      ]
+    },
+    "2": {
+      "file": "logo-2.png",
+      "label": "Full color / cream",
+      "crop": [
+        16,
+        16,
+        1644,
+        351
+      ]
+    },
+    "3": {
+      "file": "logo-3.png",
+      "label": "Cutout / cream",
+      "crop": [
+        16,
+        16,
+        1643,
+        355
+      ]
+    },
+    "4": {
+      "file": "logo-4.png",
+      "label": "Cutout / navy",
+      "crop": [
+        17,
+        16,
+        1643,
+        345
+      ]
+    },
+    "5": {
+      "file": "logo-5.png",
+      "label": "Solid cream",
+      "crop": [
+        17,
+        16,
+        1643,
+        351
+      ]
+    },
+    "6": {
+      "file": "logo-6.png",
+      "label": "Solid white",
+      "crop": [
+        17,
+        16,
+        1643,
+        351
+      ]
+    },
+    "7": {
+      "file": "logo-7.png",
+      "label": "Solid navy",
+      "crop": [
+        16,
+        17,
+        1642,
+        348
+      ]
+    }
+  },
+  "orqyne": {
+    "1": {
+      "file": "orqyne-01.png",
+      "label": "Blue / company credit",
+      "crop": [
+        332,
+        1673,
+        3840,
+        1156
+      ]
+    },
+    "2": {
+      "file": "orqyne-02.png",
+      "label": "Blue wordmark",
+      "crop": [
+        330,
+        1909,
+        3840,
+        682
+      ]
+    },
+    "3": {
+      "file": "orqyne-03.png",
+      "label": "White / company credit",
+      "crop": [
+        330,
+        1672,
+        3840,
+        1156
+      ]
+    },
+    "4": {
+      "file": "orqyne-04.png",
+      "label": "White wordmark",
+      "crop": [
+        330,
+        1909,
+        3840,
+        682
+      ]
+    },
+    "5": {
+      "file": "orqyne-05.png",
+      "label": "Black / company credit",
+      "crop": [
+        330,
+        1672,
+        3840,
+        1156
+      ]
+    },
+    "6": {
+      "file": "orqyne-06.png",
+      "label": "Black wordmark",
+      "crop": [
+        330,
+        1909,
+        3840,
+        682
+      ]
+    },
+    "7": {
+      "file": "orqyne-07.png",
+      "label": "Gradient symbol",
+      "crop": [
+        1035,
+        1032,
+        2430,
+        2436
+      ]
+    },
+    "8": {
+      "file": "orqyne-08.png",
+      "label": "White symbol",
+      "crop": [
+        1035,
+        1032,
+        2430,
+        2436
+      ]
+    },
+    "9": {
+      "file": "orqyne-09.png",
+      "label": "Black symbol",
+      "crop": [
+        1035,
+        1032,
+        2430,
+        2436
+      ]
+    }
+  }
+}

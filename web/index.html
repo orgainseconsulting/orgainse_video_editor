@@ -9,7 +9,7 @@
   <body>
     <header>
       <div class="wordmark">
-        <span class="mark" aria-hidden="true">◩</span> ORGAINSE
+        <img class="mark" src="/brand/logo-2.png" alt="ORGAINSE Consulting" />
         <span class="subbrand">Video Editor</span>
       </div>
       <span id="runtime">Checking local tools…</span>
@@ -92,6 +92,19 @@
               <summary>Export settings</summary>
               <div class="settings">
                 <label
+                  >Brand<select id="brand">
+                    <option value="auto">From production brief</option>
+                    <option value="orgainse">ORGAINSE Consulting</option>
+                    <option value="orqyne">ORQYNE</option>
+                    <option value="none">Unbranded</option>
+                  </select></label
+                >
+                <label
+                  >Logo<select id="logo">
+                    <option value="auto">Match the background</option>
+                  </select></label
+                >
+                <label
                   >Format<select id="ratio">
                     <option>16:9</option>
                     <option>9:16</option>
@@ -172,7 +185,11 @@
         <div class="screen">
           <video id="player" hidden controls preload="metadata"></video>
           <div id="standby">
-            <span class="frameword">ORGAINSE</span>
+            <img
+              class="frameword"
+              src="/brand/logo-3.png"
+              alt="ORGAINSE Consulting"
+            />
             <div class="rule"></div>
             <small>LOCAL VIDEO STUDIO</small>
           </div>

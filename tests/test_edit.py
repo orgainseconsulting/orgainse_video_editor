@@ -4,6 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
+from branding import BRAND_DIR, CATALOG, brand_settings, choose
 from figma_source import frame_ref
 from planner import make_plan
 from render import dimensions
@@ -12,6 +13,28 @@ from studio import validate
 
 
 class EditTests(unittest.TestCase):
+    def test_product_brand_inference_and_explicit_override(self):
+        for field in ("title", "brief", "script", "url"):
+            self.assertEqual(brand_settings({field: "Meet ORQYNE."}), ("orqyne", "auto"))
+        self.assertEqual(brand_settings({"title": "ORQYNE", "brand": "orgainse"}), ("orgainse", "auto"))
+        self.assertEqual(brand_settings({}), ("orgainse", "auto"))
+        self.assertEqual(brand_settings({"brand": "none"}), ("none", "auto"))
+        self.assertEqual(validate({"brief": "ORQYNE demo", "logo": "09"})["logo"], "9")
+        with self.assertRaises(ValueError):
+            validate({"brief": "Corporate launch", "logo": "8"})
+
+    def test_all_supplied_logo_variants_and_automatic_contrast(self):
+        for brand, count in [("orgainse", 7), ("orqyne", 9)]:
+            self.assertEqual(len(CATALOG[brand]), count)
+            for variant, item in CATALOG[brand].items():
+                self.assertEqual(choose(brand, variant, "light"), variant)
+                self.assertTrue((BRAND_DIR / item["file"]).is_file())
+                self.assertTrue(all(n > 0 for n in item["crop"][2:]))
+        self.assertEqual(choose("orqyne", "auto", "title"), "3")
+        self.assertEqual(choose("orqyne", "auto", "light"), "2")
+        self.assertEqual(choose("orqyne", "auto", "mixed"), "4")
+        self.assertEqual(choose("orgainse", "auto", "dark"), "2")
+
     def test_independent_highlights_and_source_offsets(self):
         cues = [
             (3, 9, "Pricing makes sense."),

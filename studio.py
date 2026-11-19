@@ -21,6 +21,7 @@ from urllib.parse import urlsplit
 
 from core import DATA, ID, IMAGES, MEDIA, RATIOS, ROOT, binary, load, model, save, source, text_field
 from render import browser, build
+from branding import BRAND_DIR, CATALOG, brand_settings
 from planner import planner_ready
 
 JOBS = DATA / "jobs"
@@ -75,10 +76,13 @@ def validate(value):
         ("ratio", RATIOS, "16:9"),
         ("framing", ("fit", "crop"), "fit"),
         ("planner", ("model", "template"), "model"),
+        ("brand", ("auto", "orgainse", "orqyne", "none"), "auto"),
     ]:
         fields[key] = value.get(key, default)
         if fields[key] not in allowed:
             raise ValueError(f"Unknown {key}.")
+    fields["logo"] = value.get("logo", "auto")
+    _, fields["logo"] = brand_settings(fields)
     for key, minval, maxval, default in [("seconds", 1, 14400, 30), ("count", 1, 24, 3)]:
         v = value.get(key, default)
         if type(v) is not int or not minval <= v <= maxval:
@@ -183,6 +187,12 @@ class Handler(BaseHTTPRequestHandler):
                         "studio.css": "text/css",
                     }[name],
                 )
+            elif path == "/brand/catalog.json":
+                self.reply(CATALOG)
+            elif path in {
+                "/brand/" + item["file"] for variants in CATALOG.values() for item in variants.values()
+            }:
+                self.send(200, (BRAND_DIR / path.split("/")[-1]).read_bytes(), "image/png")
             elif path == "/api/status":
                 self.reply(
                     {

@@ -10,7 +10,30 @@ const keys = [
   "count",
   "framing",
   "planner",
+  "brand",
+  "logo",
 ];
+let catalog = {};
+function logoOptions(wanted = "auto") {
+  const copy = ["title", "brief", "script", "url"]
+    .map((k) => el(k).value)
+    .join(" ");
+  const brand =
+    el("brand").value === "auto"
+      ? /\borqyne\b/i.test(copy)
+        ? "orqyne"
+        : "orgainse"
+      : el("brand").value;
+  const select = el("logo");
+  select.replaceChildren(
+    new Option(brand === "none" ? "No logo" : "Match the background", "auto"),
+  );
+  for (const [id, item] of Object.entries(catalog[brand] || {}))
+    select.add(new Option(id.padStart(2, "0") + " · " + item.label, id));
+  select.value = catalog[brand]?.[wanted] ? wanted : "auto";
+  select.disabled = brand === "none";
+  select.dataset.brand = brand;
+}
 const files = ["media", "image", "transcript"];
 let mode = "create",
   selected = "",
@@ -109,6 +132,7 @@ function editor(request, cut) {
       note.append(clear);
     }
   }
+  logoOptions(request?.logo || "auto");
   el("actioninfo").textContent = trim
     ? "Source range " + trim.map((v) => v.toFixed(1) + "s").join(" – ")
     : "Saves on this PC";
@@ -316,6 +340,14 @@ document
   .querySelectorAll("[data-mode]")
   .forEach((b) => (b.onclick = () => setMode(b.dataset.mode)));
 el("new").onclick = () => editor();
+el("brand").onchange = () => logoOptions();
+for (const key of ["title", "brief", "script", "url"])
+  el(key).addEventListener("input", () => {
+    if (el("brand").value !== "auto") return;
+    const previous = el("logo").dataset.brand;
+    logoOptions(el("logo").value);
+    if (el("logo").dataset.brand !== previous) el("logo").value = "auto";
+  });
 el("ratio").onchange = () =>
   (el("monitorformat").textContent = el("ratio").value);
 for (const key of files)
@@ -324,6 +356,8 @@ for (const key of files)
   };
 (async () => {
   try {
+    catalog = await api("/brand/catalog.json");
+    logoOptions(el("logo").value);
     const status = await api("/api/status");
     el("runtime").textContent = "Local workstation";
     for (const [key, name] of Object.entries({

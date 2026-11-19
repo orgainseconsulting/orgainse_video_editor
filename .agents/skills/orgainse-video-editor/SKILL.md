@@ -9,4 +9,6 @@ Use `create --title ... --brief ...` with the supplied `--video`, `--url`, `--im
 
 Use `shorts --video ... --title ... --count ... --seconds ... --brief ...` for separate, non-overlapping highlights. Provide `--transcript` if the user has timed subtitles, otherwise the studio transcribes locally. `--trim START END` operates in original-source seconds.
 
+Use `--brand orqyne` for product launches and demos, or `--brand orgainse` for corporate work. Automatic branding picks an official variant per shot. Use `--logo N` when the user specifies a particular variant, or `--brand none` for an unbranded export. The applied filename is recorded in the edit plan.
+
 Select the requested ratio. Add `--wait` and inspect the terminal job status, outputs and source times. Link the local production and the rendered files. When a job already exists, poll `status ID --wait` to avoid submitting it twice. Local project outputs live under `studio-data/jobs/<id>/` unless `ORGAINSE_DATA` was configured.
