@@ -70,12 +70,25 @@ def main():
             default="9:16" if mode == "shorts" else "16:9",
         )
         cmd.add_argument("--seconds", type=int, default=30)
+        cmd.add_argument(
+            "--formats",
+            nargs="+",
+            choices=["16:9", "9:16", "4:5", "1:1"],
+            help="Additional layouts for this edit",
+        )
+        cmd.add_argument("--music", help="Local music bed mixed below the dialogue")
+        cmd.add_argument("--framing", choices=["fit", "crop", "face"], default="fit")
+        cmd.add_argument("--caption-style", choices=["boxed", "outline", "accent"], default="boxed")
         cmd.add_argument("--draft", action="store_true")
         cmd.add_argument("--no-burn", action="store_true")
         cmd.add_argument("--wait", action="store_true")
         if mode == "create":
             cmd.add_argument("--url")
             cmd.add_argument("--image")
+            cmd.add_argument("--narration", help="Recorded narration file")
+            cmd.add_argument("--full-length", action="store_true", help="Retain the full source recording")
+            cmd.add_argument("--storyboard", type=Path, help="Scene list or saved edit-plan JSON")
+            cmd.add_argument("--treatment", choices=["standard", "showcase"], default="standard")
             cmd.add_argument("--script", type=Path, help="UTF-8 narration text file")
             cmd.add_argument("--planner", choices=["model", "template"], default="model")
         else:
@@ -98,15 +111,33 @@ def main():
             "seconds": args.seconds,
             "draft": args.draft,
             "captions": not args.no_burn,
+            "ratios": args.formats or [],
+            "framing": args.framing,
+            "captionStyle": args.caption_style,
+            "fullLength": getattr(args, "full_length", False),
         }
-        for flag, key in [("video", "media"), ("image", "image"), ("transcript", "transcript")]:
+        for flag, key in [
+            ("video", "media"),
+            ("image", "image"),
+            ("transcript", "transcript"),
+            ("narration", "narration"),
+            ("music", "music"),
+        ]:
             if path := getattr(args, flag, None):
                 req[key] = client.asset(path)
-        for flag in ("url", "count", "planner", "trim"):
+        for flag in ("url", "count", "planner", "trim", "treatment"):
             if getattr(args, flag, None) is not None:
                 req[flag] = getattr(args, flag)
         if path := getattr(args, "script", None):
             req["script"] = path.read_text(encoding="utf-8-sig")
+        if board := getattr(args, "storyboard", None):
+            plan = json.loads(board.read_text(encoding="utf-8-sig"))
+            req["scenes"] = plan["shots"] if isinstance(plan, dict) else plan
+            for shot in req["scenes"]:
+                if local_image := shot.pop("imageFile", None):
+                    shot["image"] = client.asset(board.parent / local_image)
+                if mobile := shot.pop("portraitImageFile", None):
+                    shot["portraitImage"] = client.asset(board.parent / mobile)
         data = client.request(
             "POST",
             "/api/jobs",

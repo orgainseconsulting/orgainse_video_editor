@@ -1,17 +1,22 @@
 """FFmpeg production pipeline. All render inputs are files on the workstation."""
 
 import math
+import hashlib
 import os
 import shutil
 import tempfile
 import textwrap
+import uuid
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from core import IMAGES, MEDIA, RATIOS, duration, ff, probe, run, save, source
+from core import AUDIO, IMAGES, MEDIA, RATIOS, duration, ff, load, probe, run, save, source
+from timeline import cached_scene, formats
+from site_sections import sections
+from faces import face_track, tracked_filter
 from branding import brand_settings, composite, framing_filter
 from planner import make_plan
-from figma_source import frame_ref, fetch_frame
+from figma_source import frame_ref, fetch_frame, local_fig_preview
 from speech import captions, choose_shorts, clipped, srt, transcript_for, tts
 
 
@@ -33,7 +38,7 @@ def browser():
     return next((str(p) for p in paths if p and Path(p).is_file()), None)
 
 
-def capture(url, folder):
+def check_url(url):
     address = urlsplit(url)
     if (
         address.scheme not in ("http", "https")
@@ -42,6 +47,10 @@ def capture(url, folder):
         or address.password
     ):
         raise ValueError("Supply an HTTP or HTTPS website URL without embedded credentials.")
+
+
+def capture(url, folder):
+    check_url(url)
     if ref := frame_ref(url):
         return fetch_frame(ref, folder / "website.png")
     exe = browser()
@@ -81,7 +90,7 @@ def ass_time(seconds):
     return f"{h}:{m:02}:{s:02}.{cs:02}"
 
 
-def make_overlay(path, w, h, length, headline, cues, card):
+def make_overlay(path, w, h, length, headline, cues, card, caption_style="boxed", showcase=False):
     margin = round(w * 0.065)
     base = min(w, h)
 
@@ -95,7 +104,7 @@ def make_overlay(path, w, h, length, headline, cues, card):
     )
     header += style(
         "Title",
-        max(24, int(base * (0.085 if card else 0.055))),
+        max(18, int(base * (0.083 if card else 0.066 if showcase else 0.055))),
         "&H00F1F5F6",
         "&H00171413",
         4 if card else 7,
@@ -105,12 +114,12 @@ def make_overlay(path, w, h, length, headline, cues, card):
     header += style(
         "Caption",
         max(16, int(base * 0.048)),
-        "&H00FFFFFF",
+        "&H007DE8FF" if caption_style == "accent" else "&H00FFFFFF",
         "&H00171717",
         2,
-        round(h * 0.145),
+        round(h * (0.065 if showcase else 0.145)),
         max(2, int(base * 0.008)),
-        3,
+        3 if caption_style == "boxed" else 1,
     )
     header += "[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n"
 
@@ -125,9 +134,22 @@ def make_overlay(path, w, h, length, headline, cues, card):
 
     if headline:
         label = safe(headline)
-        if card:
+        if showcase and not card:
+            wide = w > h
+            label = r"\N".join(textwrap.wrap(label, width=16 if wide else 24, break_long_words=False))
+            pos_x = int(w * 0.06)
+            pos_y = int(h * (0.42 if wide else 0.19))
+            add(
+                0,
+                length,
+                "Title",
+                rf"{{\an7\move({pos_x},{pos_y+12},{pos_x},{pos_y},0,420)\fad(200,120)}}" + label,
+            )
+        elif card:
             label = r"\N".join(textwrap.wrap(label, width=20 if w < h else 34))
-        add(0, length if card else min(length, 4), "Title", r"{\fad(160,80)}" + label)
+            add(0, length, "Title", r"{\fad(160,80)}" + label)
+        else:
+            add(0, min(length, 4), "Title", r"{\fad(160,80)}" + label)
     for a, b, text in cues:
         add(a, min(length, b), "Caption", safe(text))
     path.write_text(header + "\n".join(events) + "\n", encoding="utf-8-sig")
@@ -156,10 +178,13 @@ def encode(
     branding,
     framing,
     motion="still",
+    caption_style="boxed",
+    treatment="standard",
 ):
     card = visual is None
+    showcase = treatment == "showcase" and visual is not None and visual.suffix.lower() in IMAGES
     overlay = folder / (name + ".ass")
-    make_overlay(overlay, w, h, length, headline, cues, card)
+    make_overlay(overlay, w, h, length, headline, cues, card, caption_style, showcase)
     args = ["-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-filter_complex_threads", "2"]
     if card:
         args += ["-f", "lavfi", "-i", f"color=c=0x162329:s={w}x{h}:r=30"]
@@ -176,22 +201,56 @@ def encode(
         args += ["-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo"]
         audio = "1:a:0"
     framing_ops = framing_filter(w, h, not card and framing == "crop" and visual.suffix.lower() not in IMAGES)
+    track = None
+    if framing == "face" and visual and visual.suffix.lower() in MEDIA:
+        track = face_track(visual, start, length)
+        framing_ops = tracked_filter(w, h, track)
     if card:
         accent = {"orqyne": "0x0BAAFF", "orgainse": "0x39B29A", "none": "0xC7D0D4"}[branding[0]]
         img = (
             f"[0:v]drawbox=x=0:y=0:w={w}:h={max(3,int(h*.009))}:color={accent}:t=fill,"
             f"drawbox=x={int(w*.065)}:y={int(h*.70)}:w={int(w*.10)}:h={max(3,int(h*.005))}:color={accent}:t=fill"
         )
+    elif showcase:
+        wide = w > h
+        panel_w = round(w * (0.595 if wide else 0.92) / 2) * 2
+        panel_h = round(h * (0.69 if wide else 0.47) / 2) * 2
+        x, y = round(w * (0.35 if wide else 0.04)), round(h * (0.155 if wide else 0.355))
+        panel_motion = ""
+        if motion in ("push-in", "pull-back"):
+            step = f"0.045*min(on/{max(1, round(length*30)-1)},1)"
+            zoom = "1+" + step if motion == "push-in" else "1.045-" + step
+            panel_motion = (
+                f"zoompan=z='{zoom}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=1:s={panel_w}x{panel_h}:fps=30,"
+            )
+        img = (
+            f"[0:v]scale={panel_w}:{panel_h}:force_original_aspect_ratio=decrease:force_divisible_by=2,"
+            f"pad={panel_w}:{panel_h}:(ow-iw)/2:(oh-ih)/2:color=white,"
+            f"{panel_motion}"
+            f"drawbox=x=0:y=0:w=iw:h=ih:color=0xACD4FF:t=2,"
+            f"pad={w}:{h}:{x}:{y}:color=0x101D35,"
+            f"drawbox=x={int(w*.06)}:y={int(h*(.37 if wide else .16))}:w={int(min(w,h)*.08)}:h={max(2,round(h*.003))}:color=0x23C4F9:t=fill"
+        )
     else:
         img = "[0:v]" + framing_ops
     img += ",setsar=1,fps=30"
-    if not card and motion in ("push-in", "pull-back"):
+    if not card and not showcase and motion in ("push-in", "pull-back"):
         step = f"0.12*min(on/{max(1,round(length*30)-1)},1)"
         zoom = "1+" + step if motion == "push-in" else "1.12-" + step
         img += f",zoompan=z='{zoom}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=1:s={w}x{h}:fps=30"
     img += f",tpad=stop_mode=clone:stop_duration={length:.4f}"
     img, applied = composite(
-        args, img, 1 if audio == "0:a:0" else 2, *branding, visual, start, length, w, h, framing_ops
+        args,
+        img,
+        1 if audio == "0:a:0" else 2,
+        *branding,
+        visual,
+        start,
+        length,
+        w,
+        h,
+        framing_ops,
+        "dark" if showcase else None,
     )
     img += f",ass={overlay.name},format=yuv420p[v]"
     args += [
@@ -226,6 +285,8 @@ def encode(
         name + ".mp4",
     ]
     ff("ffmpeg", *args, cwd=folder)
+    if track is not None:
+        applied["faceSamples"] = len(track)
     return applied
 
 
@@ -242,167 +303,307 @@ def verify(path, w, h, expected):
     return measured
 
 
+def mix_export(path, length, narration, music):
+    if not narration and not music:
+        return
+    args = ["-v", "error", "-y", "-i", path]
+    audio = "0:a:0"
+    if narration:
+        args += ["-i", narration]
+        audio = "1:a:0"
+    if music:
+        idx = 2 if narration else 1
+        args += [
+            "-stream_loop",
+            "-1",
+            "-i",
+            music,
+            "-filter_complex",
+            f"[{idx}:a]volume=0.14[bed];[{audio}][bed]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:latency=1[a]",
+        ]
+        audio = "[a]"
+    else:
+        args += ["-af", "apad"]
+    tmp = path.with_suffix("." + uuid.uuid4().hex + ".mix.mp4")
+    ff(
+        "ffmpeg",
+        *args,
+        "-map",
+        "0:v:0",
+        "-map",
+        audio,
+        "-t",
+        f"{length:.5f}",
+        "-c:v",
+        "copy",
+        "-c:a",
+        "aac",
+        "-ar",
+        "48000",
+        "-ac",
+        "2",
+        "-b:a",
+        "160k",
+        "-movflags",
+        "+faststart",
+        tmp,
+    )
+    os.replace(tmp, path)
+
+
 def build(request, folder, report):
     branding = brand_settings(request)
     video = source(request["media"], MEDIA)
-    image = source(request["image"], IMAGES)
+    image = source(request["image"], IMAGES | {".fig"})
+    narration = source(request.get("narration"), AUDIO)
+    music = source(request.get("music"), AUDIO)
     sidecar = source(request["transcript"], {".json", ".srt", ".vtt"})
-    sounds = False
-    total = 0
+    if image and image.suffix == ".fig":
+        image = local_fig_preview(image, folder / "design.png")
+    site = []
+    if request["url"] and request["mode"] == "create":
+        url = request["url"]
+        check_url(url)
+        if not frame_ref(url):
+            report("Reading the product page and its sections")
+            site = sections(url, folder, request["brief"], browser(), image)
+        if not image:
+            image = source(site[0]["image"], IMAGES) if site else capture(url, folder)
+    info = probe(video) if video else None
+    if video and not any(s["codec_type"] == "video" for s in info["streams"]):
+        raise ValueError("The supplied recording contains no video stream.")
+    total = duration(info) if info else 0
+    sounds = bool(info and any(s["codec_type"] == "audio" for s in info["streams"]))
+    for audio_file in (music, narration):
+        if audio_file and not any(s["codec_type"] == "audio" for s in probe(audio_file)["streams"]):
+            raise ValueError("The supplied audio file has no audio stream.")
+    layouts = formats(request["ratio"], request.get("ratios", []))
+    short = request["mode"] == "shorts"
+    full = request.get("fullLength", False)
+    captured = {None: None}
+    if image:
+        captured[image] = hashlib.sha256(image.read_bytes()).hexdigest()
     if video:
-        info = probe(video)
-        if not any(s["codec_type"] == "video" for s in info["streams"]):
-            raise ValueError("The supplied recording contains no video stream.")
-        total = duration(info)
-        sounds = any(s["codec_type"] == "audio" for s in info["streams"])
-    w, h = dimensions(request["ratio"], request["draft"])
-    outputs = []
-
-    def record(name, title, length, cues, start=None, end=None):
-        path = folder / (name + ".mp4")
-        measured = verify(path, w, h, length)
-        row = {"file": path.name, "title": title, "duration": measured, "width": w, "height": h}
-        poster = name + ".jpg"
-        ff(
-            "ffmpeg",
-            "-v",
-            "error",
-            "-y",
-            "-ss",
-            str(min(0.65, measured / 3)),
-            "-i",
-            path,
-            "-frames:v",
-            "1",
-            "-vf",
-            "scale=480:-2",
-            folder / poster,
-        )
-        if (folder / poster).is_file():
-            row["poster"] = poster
-        if cues:
-            (folder / (name + ".srt")).write_text(srt(cues), encoding="utf-8")
-            row["subtitles"] = name + ".srt"
-        if start is not None:
-            row.update(start=start, end=end)
-        outputs.append(row)
-
-    if request["mode"] == "shorts":
+        captured[video] = video.name
+    style = request.get("captionStyle", "boxed")
+    treatment = request.get("treatment", "standard")
+    plan_file = folder / "rough-cut.json"
+    if plan_file.exists():
+        shots = load(plan_file)
+    elif short:
         if not video:
-            raise ValueError("Choose the long recording to repurpose.")
-        cues = transcript_for(video, sidecar, folder, report)
+            raise ValueError("Choose a source recording.")
         if request.get("trim"):
             a, b = request["trim"]
-            if not (0 <= a < b <= total + 0.001):
+            if not 0 <= a < b <= total + 0.001:
                 raise ValueError("Clip in/out points must fit the source recording.")
-            cuts = [{"start": a, "end": min(b, total), "title": request["title"]}]
+            shots = [dict(start=a, end=min(total, b), title=request["title"])]
         else:
-            cuts = choose_shorts(cues, total, request["seconds"], request["count"], request["brief"])
-        save(folder / "edit-plan.json", {"mode": "shorts", "source": request["media"], "clips": cuts})
-        for i, cut in enumerate(cuts, 1):
-            report(f"Rendering short {i} of {len(cuts)}")
-            a, b = cut["start"], cut["end"]
-            lines = captions(clipped(cues, a, b))
-            name = f"short-{i:02}"
-            cut["branding"] = encode(
-                folder,
-                name,
+            cues = transcript_for(video, sidecar, folder, report)
+            shots = choose_shorts(cues, total, request["seconds"], request["count"], request["brief"])
+    elif full:
+        shots = [
+            dict(visual="footage", headline="", voice="", start=a, seconds=min(60, total - a), motion="still")
+            for a in range(0, math.ceil(total), 60)
+        ]
+    else:
+        available = (["footage"] if video else []) + (["website"] if image else []) + ["title"]
+        report("Preparing the storyboard")
+        shots = request.get("scenes") or make_plan(
+            dict(request, siteSections=site), available, total, folder / "planner.log"
+        )
+        if not request.get("scenes") and not request["script"] and not narration and video:
+            scale = min(1, total / sum(s["seconds"] for s in shots))
+            for s in shots:
+                s["seconds"] *= scale
+    save(plan_file, shots)
+    if short:
+        original = transcript_for(video, sidecar, folder, report) if sidecar or sounds else []
+    elif narration:
+        original = (
+            transcript_for(narration, sidecar, folder, report) if request["captions"] or sidecar else []
+        )
+    elif (
+        video and (sounds or sidecar) and any(s["visual"] == "footage" and not s.get("voice") for s in shots)
+    ):
+        original = transcript_for(video, sidecar, folder, report) if request["captions"] or sidecar else []
+    else:
+        original = []
+    if not short and not narration and any(s.get("voice") for s in shots):
+        if (
+            not all((folder / f"voice-{i}.wav").is_file() for i, s in enumerate(shots) if s["voice"])
+            or not (folder / "voices-ready.json").exists()
+        ):
+            report("Recording narration on this workstation")
+            tts(shots, folder)
+            save(folder / "voices-ready.json", True)
+    voice_length = duration(probe(narration)) if narration else 0
+    weight = sum(s["seconds"] for s in shots) if narration else 0
+    timeline, decisions, elapsed, wanted_end = [], [], 0, 0
+    for i, s in enumerate(shots):
+        if short:
+            a, b = s["start"], s["end"]
+            decisions.append((video, a, b - a, None, "", captions(clipped(original, a, b)), "still", sounds))
+            continue
+        picture = {"title": None, "website": image, "footage": video}[s["visual"]]
+        if s.get("image"):
+            picture = source(s["image"], IMAGES)
+            captured[picture] = picture.name
+        voice = folder / f"voice-{i}.wav" if s.get("voice") and not narration else None
+        if voice and not voice.is_file():
+            raise ValueError("A recorded scene is missing its narration.")
+        target = (
+            voice_length * s["seconds"] / weight
+            if narration
+            else (duration(probe(voice)) + 0.18 if voice else s["seconds"])
+        )
+        wanted_end += target
+        next_end = max(round((elapsed + 1 / 30) * 30), round(wanted_end * 30)) / 30
+        length = next_end - elapsed
+        start = min(s["start"], max(0, total - length)) if picture == video and video else 0
+        if narration:
+            lines = captions(clipped(original, elapsed, next_end))
+        elif voice:
+            lines = captions([(0, max(0.01, length - 0.12), s["voice"])])
+        else:
+            lines = captions(clipped(original, start, start + length)) if picture and picture == video else []
+        timeline.extend((elapsed + a, elapsed + b, t) for a, b, t in lines)
+        title = s.get("headline", "")
+        if picture is None and not title:
+            title = request["title"]
+        burned = [] if picture is None and title == s.get("voice") and not narration else lines
+        decisions.append(
+            (picture, start, length, voice, title, burned, s.get("motion", "still"), sounds and not narration)
+        )
+        s.update(start=start, seconds=length, outputStart=elapsed)
+        elapsed = next_end
+    outputs, layout_plans = [], {}
+    for n, ratio in enumerate(layouts):
+        w, h = dimensions(ratio, request["draft"])
+        suffix = "" if n == 0 else "-" + ratio.replace(":", "x")
+        chosen = []
+        concat = []
+
+        def record(name, title, length, cues, **extra):
+            path = folder / (name + ".mp4")
+            measured = verify(path, w, h, length)
+            row = dict(
+                file=path.name, title=title, duration=measured, width=w, height=h, ratio=ratio, **extra
+            )
+            poster = name + ".jpg"
+            ff(
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-ss",
+                str(min(0.65, measured / 3)),
+                "-i",
+                path,
+                "-frames:v",
+                "1",
+                "-vf",
+                "scale=480:-2",
+                folder / poster,
+            )
+            row["poster"] = poster
+            if cues:
+                (folder / (name + ".srt")).write_text(srt(cues), encoding="utf-8")
+                (folder / (name + ".vtt")).write_text(srt(cues, webvtt=True), encoding="utf-8")
+                row.update(subtitles=name + ".srt", webvtt=name + ".vtt")
+            outputs.append(row)
+
+        for i, (picture, start, length, voice, title, lines, motion, original_audio) in enumerate(decisions):
+            if w < h and shots[i].get("portraitImage") and shots[i].get("visual") == "website":
+                picture = source(shots[i]["portraitImage"], IMAGES)
+                captured[picture] = picture.name
+            report(f"Rendering {ratio} · {'clip' if short else 'scene'} {i+1} of {len(decisions)}")
+            name = (f"short-{i+1:02}" if short else f"scene-{i:03}") + suffix
+            burn = lines if request["captions"] else []
+            voice_id = hashlib.sha256(voice.read_bytes()).hexdigest() if voice else None
+            spec = [
                 w,
                 h,
-                b - a,
-                video,
-                a,
-                None,
-                sounds,
-                "",
-                lines if request["captions"] else [],
+                captured[picture],
+                start,
+                length,
+                voice_id,
+                original_audio,
+                title,
+                burn,
                 branding,
                 request["framing"],
+                motion,
+                style,
+                treatment,
+            ]
+            mark, reused = cached_scene(
+                folder,
+                name,
+                spec,
+                lambda attempt: encode(
+                    attempt,
+                    name,
+                    w,
+                    h,
+                    length,
+                    picture,
+                    start,
+                    voice,
+                    original_audio,
+                    title,
+                    burn,
+                    branding,
+                    request["framing"],
+                    motion,
+                    style,
+                    treatment,
+                ),
+                lambda path: verify(path, w, h, length),
             )
-            record(name, cut["title"], b - a, lines, a, b)
-        save(folder / "edit-plan.json", {"mode": "shorts", "source": request["media"], "clips": cuts})
-        return outputs
-    if request["url"] and not image:
-        report("Capturing the supplied website")
-        image = capture(request["url"], folder)
-    sources = (["footage"] if video else []) + (["website"] if image else []) + ["title"]
-    report("Planning scenes locally")
-    shots = make_plan(request, sources, total, folder / "planner.log")
-    if not request["script"] and video and sum(x["seconds"] for x in shots) > total:
-        scale = total / sum(x["seconds"] for x in shots)
-        for shot in shots:
-            shot["seconds"] *= scale
-    report("Preparing narration")
-    tts(shots, folder)
-    original = []
-    if (
-        request["captions"]
-        and video
-        and sounds
-        and not request["script"]
-        and any(s["visual"] == "footage" for s in shots)
-    ):
-        original = transcript_for(video, sidecar, folder, report)
-    save(folder / "edit-plan.json", {"shots": shots})
-    timeline = []
-    elapsed = 0
-    for i, shot in enumerate(shots):
-        report(f"Rendering scene {i+1} of {len(shots)}")
-        picture = {"title": None, "website": image, "footage": video}[shot["visual"]]
-        voice = folder / f"voice-{i}.wav" if shot["voice"] else None
-        length = duration(probe(voice)) + 0.18 if voice else max(0.1, shot["seconds"])
-        length = math.ceil(length * 30) / 30
-        start = max(0, min(shot["start"], max(0, total - length))) if picture == video and video else 0
-        full_cues = (
-            [(0, length - 0.12, shot["voice"])]
-            if voice
-            else (clipped(original, start, start + length) if picture == video and video else [])
+            decision = dict(shots[i], branding=mark, reused=reused)
+            chosen.append(decision)
+            if short:
+                mix_export(folder / (name + ".mp4"), length, None, music)
+                record(name, shots[i]["title"], length, lines, start=start, end=shots[i]["end"])
+            else:
+                concat.append(f"file '{name}.mp4'\nduration {length:.7f}\n")
+        if not short:
+            name = "master" + suffix
+            playlist = folder / ("concat" + suffix + ".txt")
+            playlist.write_text("".join(concat), encoding="ascii")
+            report(f"Joining and verifying {ratio}")
+            joined = folder / (name + "." + uuid.uuid4().hex + ".mp4")
+            ff(
+                "ffmpeg",
+                "-v",
+                "error",
+                "-y",
+                "-f",
+                "concat",
+                "-safe",
+                "1",
+                "-i",
+                playlist,
+                "-c",
+                "copy",
+                "-movflags",
+                "+faststart",
+                joined,
+            )
+            mix_export(joined, elapsed, narration or (video if full and sounds else None), music)
+            verify(joined, w, h, elapsed)
+            os.replace(joined, folder / (name + ".mp4"))
+            record(name, request["title"], elapsed, timeline)
+        layout_plans[ratio] = chosen
+        key = "clips" if short else "shots"
+        save(
+            folder / "edit-plan.json",
+            {
+                "mode": request["mode"],
+                "source": request["media"],
+                key: layout_plans[layouts[0]],
+                "layouts": layout_plans,
+            },
         )
-        lines = captions(full_cues)
-        timeline.extend((elapsed + a, elapsed + b, t) for a, b, t in lines)
-        # On text-only scenes avoid printing the same narration twice.
-        title = shot["headline"] or (request["title"] if picture is None else "")
-        burned = lines if request["captions"] and not (picture is None and title == shot["voice"]) else []
-        shot["branding"] = encode(
-            folder,
-            f"scene-{i:03}",
-            w,
-            h,
-            length,
-            picture,
-            start,
-            voice,
-            sounds,
-            title,
-            burned,
-            branding,
-            request["framing"],
-            shot.get("motion", "still"),
-        )
-        shot.update(start=start, seconds=length, outputStart=elapsed)
-        elapsed += length
-    save(folder / "edit-plan.json", {"shots": shots})
-    (folder / "concat.txt").write_text(
-        "".join(f"file 'scene-{i:03}.mp4'\n" for i in range(len(shots))), encoding="ascii"
-    )
-    report("Joining scenes and verifying streams")
-    ff(
-        "ffmpeg",
-        "-v",
-        "error",
-        "-y",
-        "-f",
-        "concat",
-        "-safe",
-        "1",
-        "-i",
-        "concat.txt",
-        "-c",
-        "copy",
-        "-movflags",
-        "+faststart",
-        "master.mp4",
-        cwd=folder,
-    )
-    record("master", request["title"], elapsed, timeline)
     return outputs

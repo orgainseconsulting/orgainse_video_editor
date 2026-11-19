@@ -176,15 +176,11 @@ def choose_shorts(cues, total, target, count, brief):
         raise ValueError(
             "No complete timed passage fits the clip length. Try a longer target or specify an in/out range."
         )
-    return [
-        {k: v for k, v in x.items() if k != "words"} for x in sorted(selected, key=lambda x: x["start"])
-    ]
+    return [{k: v for k, v in x.items() if k != "words"} for x in sorted(selected, key=lambda x: x["start"])]
 
 
 def clipped(cues, start, end):
-    return [
-        (max(0, a - start), min(end - start, b - start), t) for a, b, t in cues if b > start and a < end
-    ]
+    return [(max(0, a - start), min(end - start, b - start), t) for a, b, t in cues if b > start and a < end]
 
 
 def captions(cues):
@@ -201,11 +197,17 @@ def captions(cues):
     return result
 
 
-def srt(cues):
+def srt(cues, webvtt=False):
     def stamp(t):
         hours, rest = divmod(round(t * 1000), 3600000)
         minutes, rest = divmod(rest, 60000)
         seconds, ms = divmod(rest, 1000)
-        return f"{hours:02}:{minutes:02}:{seconds:02},{ms:03}"
+        separator = "." if webvtt else ","
+        return f"{hours:02}:{minutes:02}:{seconds:02}{separator}{ms:03}"
 
-    return "\n\n".join(f"{i}\n{stamp(a)} --> {stamp(b)}\n{t}" for i, (a, b, t) in enumerate(cues, 1)) + "\n"
+    prefix = "WEBVTT\n\n" if webvtt else ""
+    return (
+        prefix
+        + "\n\n".join(f"{i}\n{stamp(a)} --> {stamp(b)}\n{t}" for i, (a, b, t) in enumerate(cues, 1))
+        + "\n"
+    )

@@ -9,7 +9,6 @@ import mimetypes
 import os
 import queue
 import re
-import shutil
 import sys
 import threading
 import uuid
@@ -19,7 +18,9 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlsplit
 
-from core import DATA, ID, IMAGES, MEDIA, RATIOS, ROOT, binary, load, model, save, source, text_field
+from core import AUDIO, DATA, ID, IMAGES, MEDIA, RATIOS, ROOT, binary, load, model, save, source, text_field
+from site_sections import save_capture
+from timeline import formats, scenes
 from render import browser, build
 from branding import BRAND_DIR, CATALOG, brand_settings
 from planner import planner_ready
@@ -28,7 +29,7 @@ JOBS = DATA / "jobs"
 ASSETS = DATA / "assets"
 WORK = queue.Queue()
 STATE_LOCK = threading.Lock()
-EXTENSIONS = MEDIA | IMAGES | {".srt", ".vtt", ".json"}
+EXTENSIONS = MEDIA | IMAGES | AUDIO | {".srt", ".vtt", ".json", ".fig"}
 
 
 @contextlib.contextmanager
@@ -67,6 +68,8 @@ def validate(value):
         "url": 2500,
         "media": 60,
         "image": 60,
+        "narration": 60,
+        "music": 60,
         "transcript": 60,
     }.items():
         fields[key] = text_field(value.get(key, ""), limit)
@@ -74,13 +77,16 @@ def validate(value):
     for key, allowed, default in [
         ("mode", ("create", "shorts"), "create"),
         ("ratio", RATIOS, "16:9"),
-        ("framing", ("fit", "crop"), "fit"),
+        ("framing", ("fit", "crop", "face"), "fit"),
+        ("captionStyle", ("boxed", "outline", "accent"), "boxed"),
+        ("treatment", ("standard", "showcase"), "standard"),
         ("planner", ("model", "template"), "model"),
         ("brand", ("auto", "orgainse", "orqyne", "none"), "auto"),
     ]:
         fields[key] = value.get(key, default)
         if fields[key] not in allowed:
             raise ValueError(f"Unknown {key}.")
+    fields["ratios"] = formats(fields["ratio"], value.get("ratios", []))
     fields["logo"] = value.get("logo", "auto")
     _, fields["logo"] = brand_settings(fields)
     for key, minval, maxval, default in [("seconds", 1, 14400, 30), ("count", 1, 24, 3)]:
@@ -88,17 +94,42 @@ def validate(value):
         if type(v) is not int or not minval <= v <= maxval:
             raise ValueError(f"{key} should be between {minval} and {maxval}.")
         fields[key] = v
-    for key, default in [("draft", False), ("captions", True)]:
+    for key, default in [("draft", False), ("captions", True), ("fullLength", False)]:
         v = value.get(key, default)
         if type(v) is not bool:
             raise ValueError(f"Invalid {key}.")
         fields[key] = v
-    for key, types in [("media", MEDIA), ("image", IMAGES), ("transcript", {".srt", ".vtt", ".json"})]:
+    for key, types in [
+        ("media", MEDIA),
+        ("image", IMAGES | {".fig"}),
+        ("narration", AUDIO),
+        ("music", AUDIO),
+        ("transcript", {".srt", ".vtt", ".json"}),
+    ]:
         source(fields[key], types)
+    if value.get("scenes") is not None:
+        available = (
+            ["title"]
+            + (["footage"] if fields["media"] else [])
+            + (["website"] if fields["image"] or fields["url"] else [])
+        )
+        fields["scenes"] = scenes(value["scenes"], available)
+    if fields["mode"] == "shorts" and (fields.get("scenes") or fields["narration"]):
+        raise ValueError(
+            "Use a recording's original dialogue for shorts. Storyboards and separate narration belong to Create a video."
+        )
     if fields["mode"] == "shorts" and not fields["media"]:
         raise ValueError("Choose a source recording first.")
+    if fields["fullLength"] and (
+        fields["mode"] != "create"
+        or not fields["media"]
+        or fields["narration"]
+        or fields["script"]
+        or fields.get("scenes")
+    ):
+        raise ValueError("Keep full recording needs a source video with its original audio and timing.")
     if fields["mode"] == "create" and not any(
-        fields[k] for k in ("brief", "script", "media", "url", "image")
+        fields.get(k) for k in ("brief", "script", "media", "url", "image", "narration", "scenes")
     ):
         raise ValueError("Add footage, a script, a scene brief or a website.")
     trim = value.get("trim")
@@ -130,12 +161,13 @@ def worker():
             outputs = build(request, folder, lambda s: update(folder, step=s))
             image = folder / "website.png"
             if image.is_file() and not request["image"]:
-                asset = hashlib.sha256(image.read_bytes()).hexdigest()[:32] + ".png"
-                shutil.copyfile(image, ASSETS / asset)
-                request = dict(request, image=asset)
+                request = dict(request, image=save_capture(image))
             step = f"{len(outputs)} export" + ("s" if len(outputs) != 1 else "") + " ready"
-            if request["mode"] == "shorts" and not request.get("trim") and len(outputs) < request["count"]:
-                step += f" · found {len(outputs)} distinct passages for {request['count']} requested clips"
+            distinct = len({(o.get("start"), o.get("end")) for o in outputs})
+            if request["mode"] == "shorts" and not request.get("trim") and distinct < request["count"]:
+                step += (
+                    f" · found {distinct} distinct passages for {request['count']} requested clips per layout"
+                )
             update(folder, status="done", step=step, outputs=outputs, request=request)
         except Exception as exc:
             update(folder, status="failed", step=str(exc) or type(exc).__name__)
@@ -214,7 +246,12 @@ class Handler(BaseHTTPRequestHandler):
                 name = match[2]
                 if not name:
                     return self.reply(state)
-                files = {v[k] for v in state["outputs"] for k in ("file", "subtitles", "poster") if k in v}
+                files = {
+                    v[k]
+                    for v in state["outputs"]
+                    for k in ("file", "subtitles", "webvtt", "poster")
+                    if k in v
+                }
                 if name == "edit-plan.json" and (folder / name).exists():
                     files.add(name)
                 if name not in files:
@@ -330,11 +367,8 @@ def serve(server, open_browser):
         if state["status"] == "queued":
             WORK.put(p.parent)
         elif state["status"] == "running":
-            update(
-                p.parent,
-                status="interrupted",
-                step="Studio stopped during export. Reopen the brief to retry.",
-            )
+            update(p.parent, status="queued", step="Resuming verified scenes after restart")
+            WORK.put(p.parent)
     threading.Thread(target=worker, daemon=True).start()
     url = f"http://127.0.0.1:{server.server_port}"
     print(f"ORGAINSE Video Editor  {url}", flush=True)

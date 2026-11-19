@@ -1,0 +1,21 @@
+[submodule "upstream/digital-samba"]
+	path = upstream/digital-samba
+	url = https://github.com/digitalsamba/claude-code-video-toolkit.git
+[submodule "upstream/shotcraft"]
+	path = upstream/shotcraft
+	url = https://github.com/Vincentwei1021/video-shotcraft.git
+[submodule "upstream/video-effects"]
+	path = upstream/video-effects
+	url = https://github.com/Vibha-Ramprakash/claude-video-effects.git
+[submodule "upstream/caption-styles"]
+	path = upstream/caption-styles
+	url = https://github.com/Vibha-Ramprakash/claude-caption-styles.git
+[submodule "upstream/vaibhav-editor"]
+	path = upstream/vaibhav-editor
+	url = https://github.com/V413havai/vaibhav-video-editor.git
+[submodule "upstream/remotion-skill"]
+	path = upstream/remotion-skill
+	url = https://github.com/haidrrrry/claude-remotion-skill.git
+[submodule "upstream/fframes"]
+	path = upstream/fframes
+	url = https://github.com/dmtrKovalenko/fframes.git

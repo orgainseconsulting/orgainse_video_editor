@@ -1,4 +1,4 @@
-param([switch]$RenderOnly)
+param([switch]$RenderOnly, [switch]$ProductionExtras)
 $ErrorActionPreference='Stop'
 $toolsRoot=Join-Path $PSScriptRoot '.local'
 $downloadRoot=Join-Path $toolsRoot 'downloads'
@@ -36,6 +36,17 @@ if (-not (Get-ChildItem -LiteralPath $whisperDir -Recurse -Filter whisper-cli.ex
     Expand-Archive -LiteralPath $archive -DestinationPath $whisperDir -Force
 }
 Get-VerifiedFile 'https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny.bin' (Join-Path $modelRoot 'ggml-tiny.bin') 'be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21'
+if ($ProductionExtras) {
+    $studioPython = & (Join-Path $PSScriptRoot 'python-runtime.ps1')
+    & (Join-Path $PSScriptRoot 'setup-vision.ps1') -Python $studioPython
+    $bundledNode = Join-Path (Split-Path (Split-Path $studioPython -Parent) -Parent) 'node\node_modules\playwright-core\package.json'
+    if (-not (Test-Path -LiteralPath $bundledNode)) {
+        $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue
+        if (-not $npm) { throw 'Install Node.js with npm for multi-section website capture, then rerun -ProductionExtras.' }
+        & $npm.Source install --prefix (Join-Path $toolsRoot 'web-capture') --no-audit --no-fund --ignore-scripts playwright-core@1.55.0
+        if ($LASTEXITCODE) { throw 'Multi-section website capture setup failed.' }
+    }
+}
 if ($RenderOnly) { Write-Host 'Template editing, rendering and transcription are ready.'; return }
 
 $ollamaCmd=Get-Command ollama.exe -ErrorAction SilentlyContinue

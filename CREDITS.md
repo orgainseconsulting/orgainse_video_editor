@@ -13,15 +13,17 @@ ORGAINSE Video Editor brings the editing workflow, workstation interface, local 
 | media_ops.py | 94089bdb4984958c6d04d42a5d4957c1f97bc77e2707a4232c9430565b075273 |
 | win_encoding.py | 2f73bf14dff1b5bb46babc2000fa22bf8266e894426781a711845afd448ad3b3 |
 
-### Projects studied
+### Pinned production sources
 
-The following creators informed the production research. Their attribution appears here independently of which components ship in this release.
+All seven unique source projects are pinned under `upstream/`. Git records their exact revisions. The four directly used Digital Samba files above retain their own snapshot hashes. Each upstream project retains its license and notices for code, fonts, example media and weights.
 
 - **Wei Yihao** for Video Shotcraft, its product-shot recipes and editable motion workbench. [Video Shotcraft](https://github.com/Vincentwei1021/video-shotcraft)
 - **Vibha Ramprakash** for face-aware video effects and animated caption styles. [Video effects](https://github.com/Vibha-Ramprakash/claude-video-effects) · [Caption styles](https://github.com/Vibha-Ramprakash/claude-caption-styles)
 - **Vaibhav, @vaibhavv.ai** for the director workflow, edit time maps and audio planning. [Vaibhav video editor](https://github.com/V413havai/vaibhav-video-editor)
 - **haidrrrry** for the motion graphics design and review workflow. [Remotion skill](https://github.com/haidrrrry/claude-remotion-skill)
 - **Dmitriy Kovalenko** and FFrames contributors for their Rust/SVG approach to local video rendering. [FFrames](https://github.com/dmtrKovalenko/fframes)
+
+- **OpenCV contributors** provide the face detector and bundled Haar cascade used by the optional native face-framing workflow. Playwright drives the local browser for multi-section page capture. [OpenCV](https://github.com/opencv/opencv) · [Playwright](https://github.com/microsoft/playwright)
 
 ### Brand artwork
 

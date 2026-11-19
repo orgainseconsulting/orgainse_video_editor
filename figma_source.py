@@ -4,6 +4,7 @@ import json
 import os
 import re
 import urllib.request
+import zipfile
 from urllib.parse import parse_qs, quote, urlencode, urlsplit
 
 
@@ -52,3 +53,21 @@ def fetch_frame(ref, path):
         while chunk := response.read(1024 * 1024):
             out.write(chunk)
     return path
+
+
+def local_fig_preview(file, output):
+    """Read the document preview included with a Figma local-copy archive."""
+    try:
+        with zipfile.ZipFile(file) as archive:
+            item = archive.getinfo("thumbnail.png")
+            if not 8 < item.file_size <= 64 * 1024**2:
+                raise ValueError("The Figma preview has an unsupported size.")
+            png = archive.read(item)
+    except (zipfile.BadZipFile, KeyError) as exc:
+        raise ValueError(
+            "This Figma file has no embedded PNG preview. Attach a frame export or its Figma node link."
+        ) from exc
+    if not png.startswith(b"\x89PNG\r\n\x1a\n"):
+        raise ValueError("The embedded Figma document preview is invalid.")
+    output.write_bytes(png)
+    return output

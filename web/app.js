@@ -12,6 +12,8 @@ const keys = [
   "planner",
   "brand",
   "logo",
+  "treatment",
+  "captionStyle",
 ];
 let catalog = {};
 function logoOptions(wanted = "auto") {
@@ -34,7 +36,129 @@ function logoOptions(wanted = "auto") {
   select.disabled = brand === "none";
   select.dataset.brand = brand;
 }
-const files = ["media", "image", "transcript"];
+const files = ["media", "image", "transcript", "narration", "music"];
+let storyboard = [];
+function showBoard() {
+  const enabled = el("useScenes").checked;
+  el("sceneTools").hidden = !enabled;
+  el("script").disabled = enabled;
+  if (!enabled) return;
+  const list = el("sceneList");
+  list.replaceChildren();
+  storyboard.forEach((s, i) => {
+    const row = document.createElement("fieldset");
+    row.append(textNode("legend", "Scene " + (i + 1)));
+    function field(key, label, choices) {
+      const wrap = textNode("label", label);
+      const input = document.createElement(
+        choices ? "select" : key === "voice" ? "textarea" : "input",
+      );
+      if (choices) for (const [v, l] of choices) input.add(new Option(l, v));
+      if (key === "start" || key === "seconds") {
+        input.type = "number";
+        input.step = "any";
+        input.min = key === "start" ? "0" : "0.034";
+      }
+      input.value = s[key] ?? "";
+      input.oninput = () => {
+        s[key] = input.type === "number" ? Number(input.value) : input.value;
+      };
+      wrap.append(input);
+      row.append(wrap);
+    }
+    field("visual", "Visual", [
+      ["title", "Title card"],
+      ["website", "Product screen"],
+      ["footage", "Source recording"],
+    ]);
+    field("headline", "On-screen text");
+    field("voice", "Narration");
+    field("start", "Source start (seconds)");
+    field("seconds", "Scene seconds");
+    field("motion", "Motion", [
+      ["still", "Still"],
+      ["push-in", "Push in"],
+      ["pull-back", "Pull back"],
+    ]);
+    for (const [key, saved, name] of [
+      ["upload", "image", "Scene image"],
+      ["mobileUpload", "portraitImage", "Portrait image"],
+    ]) {
+      const label = textNode(
+        "label",
+        s[saved] || s[key] ? "Replace " + name.toLowerCase() : name,
+      );
+      const file = document.createElement("input");
+      file.type = "file";
+      file.accept = ".png,.jpg,.jpeg,.webp";
+      file.onchange = () => {
+        if (file.files[0]) {
+          s[key] = file.files[0];
+          s.visual = "website";
+          showBoard();
+        }
+      };
+      label.append(file);
+      row.append(label);
+    }
+    const actions = textNode("div", "", "actions");
+    function action(name, fn, disabled) {
+      const b = textNode("button", name, "secondary");
+      b.type = "button";
+      b.disabled = disabled;
+      b.onclick = () => {
+        fn();
+        showBoard();
+      };
+      actions.append(b);
+    }
+    action(
+      "Move up",
+      () => {
+        [storyboard[i - 1], storyboard[i]] = [s, storyboard[i - 1]];
+      },
+      i === 0,
+    );
+    action(
+      "Move down",
+      () => {
+        [storyboard[i + 1], storyboard[i]] = [s, storyboard[i + 1]];
+      },
+      i === storyboard.length - 1,
+    );
+    action("Remove", () => storyboard.splice(i, 1), false);
+    row.append(actions);
+    list.append(row);
+  });
+}
+function newScene() {
+  return {
+    visual: "title",
+    headline: "",
+    voice: "",
+    seconds: 4,
+    start: 0,
+    motion: "still",
+  };
+}
+el("useScenes").onchange = () => {
+  if (!storyboard.length) storyboard.push(newScene());
+  showBoard();
+};
+el("addScene").onclick = () => {
+  storyboard.push(newScene());
+  showBoard();
+};
+async function upload(file) {
+  const ext = file.name.match(/\.[a-z0-9]+$/i)?.[0] || "";
+  return (
+    await api("/api/assets", {
+      method: "POST",
+      headers: { "X-Orgainse-Studio": "1", "X-File-Extension": ext },
+      body: file,
+    })
+  ).asset;
+}
 let mode = "create",
   selected = "",
   assets = {},
@@ -108,13 +232,21 @@ function editor(request, cut) {
   trim = cut || null;
   originalUrl = request?.url || "";
   el("form").reset();
+  storyboard = structuredClone(request?.scenes || []);
+  el("useScenes").checked = storyboard.length > 0;
+  el("storyboard").open = storyboard.length > 0;
+  showBoard();
   assets = {};
   el("error").textContent = "";
   setMode(request?.mode || "create", false);
   if (request) {
     for (const k of keys)
       if (request[k] !== undefined) el(k).value = request[k];
-    for (const k of ["captions", "draft"]) el(k).checked = request[k];
+    for (const k of ["captions", "draft", "fullLength"])
+      el(k).checked = !!request[k];
+    for (const c of el("layouts").querySelectorAll("input"))
+      c.checked =
+        c.value !== request.ratio && !!request.ratios?.includes(c.value);
     for (const k of files) if (request[k]) assets[k] = request[k];
     if (cut) el("count").value = 1;
   }
@@ -198,6 +330,15 @@ function detail(j) {
   el("plan").href = base + "edit-plan.json";
   el("plan").target = "_blank";
   el("revise").onclick = () => editor(j.request, j.request.trim);
+  el("editScenes").hidden = j.request.mode !== "create" || j.status !== "done";
+  el("editScenes").onclick = async () => {
+    try {
+      const plan = await api(base + "edit-plan.json");
+      editor({ ...j.request, fullLength: false, scenes: plan.shots });
+    } catch (e) {
+      el("progress").textContent = e.message;
+    }
+  };
   if (!j.outputs.length) {
     monitor(null, null, j.request.ratio);
     return;
@@ -224,7 +365,7 @@ function detail(j) {
       monitor(
         base + o.file,
         o.title,
-        j.request.ratio,
+        o.ratio || j.request.ratio,
         o.poster ? base + o.poster : "",
       );
       el("player")
@@ -234,6 +375,7 @@ function detail(j) {
     actions.append(play, fileLink(base + o.file, "Save MP4", true));
     if (o.subtitles)
       actions.append(fileLink(base + o.subtitles, "Subtitles", true));
+    if (o.webvtt) actions.append(fileLink(base + o.webvtt, "WebVTT", true));
     if (o.start !== undefined) {
       const trimButton = textNode("button", "Adjust cut", "secondary");
       trimButton.onclick = () => {
@@ -298,26 +440,44 @@ el("form").onsubmit = async (event) => {
   try {
     const req = { mode };
     for (const id of keys) req[id] = el(id).value;
+    req.ratios = Array.from(
+      el("layouts").querySelectorAll("input:checked"),
+      (c) => c.value,
+    );
+    req.fullLength = mode === "create" && el("fullLength").checked;
+    if (mode === "create" && el("useScenes").checked) {
+      if (!storyboard.length) throw Error("Add a scene to the storyboard.");
+      req.script = "";
+      req.scenes = [];
+      for (const {
+        upload: file,
+        mobileUpload: phoneFile,
+        ...s
+      } of storyboard) {
+        if (file && s.visual === "website") s.image = await upload(file);
+        if (phoneFile && s.visual === "website")
+          s.portraitImage = await upload(phoneFile);
+        if (s.visual !== "website") {
+          delete s.image;
+          delete s.portraitImage;
+        }
+        req.scenes.push(s);
+      }
+    }
     req.seconds = Number(req.seconds);
     req.count = Number(req.count);
     for (const key of ["captions", "draft"]) req[key] = el(key).checked;
     if (req.url !== originalUrl && !el("image").files.length)
       delete assets.image;
-    if (el("media").files.length && !el("transcript").files.length) {
+    if ((el("media").files.length || el("narration").files.length) && !el("transcript").files.length)
       delete assets.transcript;
-      trim = null;
-    }
+    if (el("media").files.length) trim = null;
     for (const key of files) {
+      if (mode === "shorts" && ["narration", "image"].includes(key)) continue;
       const file = el(key).files[0];
       if (file) {
         el("actioninfo").textContent = "Saving " + file.name + " on this PC…";
-        const ext = file.name.match(/\.[a-z0-9]+$/i)?.[0] || "";
-        const uploaded = await api("/api/assets", {
-          method: "POST",
-          headers: { "X-Orgainse-Studio": "1", "X-File-Extension": ext },
-          body: file,
-        });
-        assets[key] = uploaded.asset;
+        assets[key] = await upload(file);
       }
       req[key] = assets[key] || "";
     }

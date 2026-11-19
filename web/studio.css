@@ -361,6 +361,27 @@ video {
 .export button {
   font-size: 13px;
 }
+fieldset {
+  min-width: 0;
+  border: 1px solid var(--border);
+  padding: 12px;
+  margin: 8px 0;
+}
+legend {
+  color: var(--soft);
+  padding: 0 4px;
+}
+#sceneList fieldset {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
+  gap: 8px 12px;
+}
+#sceneList .actions {
+  grid-column: 1/-1;
+}
+body.shorts #storyboard {
+  display: none;
+}
 .shorts-only,
 [hidden] {
   display: none !important;

@@ -16,6 +16,7 @@ DATA = Path(os.environ.get("ORGAINSE_DATA", ROOT / "studio-data")).resolve()
 RATIOS = {"16:9": (1920, 1080), "9:16": (1080, 1920), "4:5": (1080, 1350), "1:1": (1080, 1080)}
 MEDIA = {".mp4", ".mov", ".mkv", ".webm", ".m4v", ".avi", ".mts"}
 IMAGES = {".png", ".jpg", ".jpeg", ".webp"}
+AUDIO = {".wav", ".mp3", ".m4a", ".aac", ".flac", ".ogg"}
 ID = re.compile(r"[a-f0-9]{32}\Z")
 NO_WINDOW = getattr(subprocess, "CREATE_NO_WINDOW", 0)
 

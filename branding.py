@@ -90,11 +90,11 @@ def choose(brand, override, surface):
     }[surface]
 
 
-def composite(args, img, index, brand, override, visual, start, length, w, h, framing):
+def composite(args, img, index, brand, override, visual, start, length, w, h, framing, surface_hint=None):
     if brand == "none":
         return img, {"brand": "none"}
     card = visual is None
-    surface = "title" if card else background(visual, start, length, w, h, framing)
+    surface = surface_hint or ("title" if card else background(visual, start, length, w, h, framing))
     variant = choose(brand, override, surface)
     asset = CATALOG[brand][variant]
     cx, cy, cw, ch = asset["crop"]
