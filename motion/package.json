@@ -1,0 +1,13 @@
+{
+  "name": "orgainse-local-motion",
+  "private": true,
+  "dependencies": {
+    "@remotion/player": "4.0.484",
+    "@remotion/motion-blur": "4.0.484",
+    "remotion": "4.0.484",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "esbuild": "0.25.12",
+    "playwright-core": "1.56.1"
+  }
+}

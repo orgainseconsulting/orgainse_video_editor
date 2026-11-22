@@ -16,6 +16,7 @@ const keys = [
   "captionStyle",
 ];
 let catalog = {};
+let library = [], projectLayers = [], targetScene = null, libraryKind = "graphic";
 function logoOptions(wanted = "auto") {
   const copy = ["title", "brief", "script", "url"]
     .map((k) => el(k).value)
@@ -62,6 +63,11 @@ function showBoard() {
       input.value = s[key] ?? "";
       input.oninput = () => {
         s[key] = input.type === "number" ? Number(input.value) : input.value;
+        if (key === "graphic") showBoard();
+        if (key === "visual") {
+          if (s.visual === "graphic" && !s.graphic) s.graphic = library.find(x => x.kind === "graphic")?.id;
+          showBoard();
+        }
       };
       wrap.append(input);
       row.append(wrap);
@@ -70,7 +76,12 @@ function showBoard() {
       ["title", "Title card"],
       ["website", "Product screen"],
       ["footage", "Source recording"],
+      ["graphic", "Motion scene"],
     ]);
+    if (s.visual === "graphic") {
+      field("graphic", "Composition", library.filter(x => x.kind === "graphic").map(x => [x.id, x.name]));
+      if (library.find(x => x.id === s.graphic)?.editable) field("subhead", "Supporting line");
+    }
     field("headline", "On-screen text");
     field("voice", "Narration");
     field("start", "Source start (seconds)");
@@ -94,7 +105,7 @@ function showBoard() {
       file.onchange = () => {
         if (file.files[0]) {
           s[key] = file.files[0];
-          s.visual = "website";
+          if (s.visual !== "graphic") s.visual = "website";
           showBoard();
         }
       };
@@ -127,10 +138,152 @@ function showBoard() {
       i === storyboard.length - 1,
     );
     action("Remove", () => storyboard.splice(i, 1), false);
+    const fx = document.createElement("div");
+    fx.className = "scene-fx";
+    drawLayers(fx, s.effects ||= [], true);
+    row.append(fx);
+    action("Browse scene effects", () => openLibrary(s, "effect"), false);
     row.append(actions);
     list.append(row);
   });
 }
+function drawLayers(container, layers, timed) {
+  container.replaceChildren();
+  for (const [i, layer] of layers.entries()) {
+    const group = document.createElement("div");
+    group.className = "effect-layer";
+    group.append(textNode("strong", library.find(item => item.id === layer.id)?.name || layer.id));
+    const info = library.find(item => item.id === layer.id);
+    if (info?.looks?.length) {
+      const label = textNode("label","Look");
+      const select = document.createElement("select");
+      select.add(new Option("Original",""));
+      for (const look of info.looks) select.add(new Option(look,look));
+      select.value = layer.look || "";
+      select.onchange = () => {layer.look = select.value;};
+      label.append(select); group.append(label);
+    }
+    if (info?.cardImages) {
+      const label = textNode("label",layer.cards?.length || layer.uploads?.length ? "Replace card images" : "Card images");
+      const file = document.createElement("input");
+      file.type = "file";file.multiple = true;file.accept = ".png,.jpg,.jpeg,.webp";
+      file.onchange = () => {layer.uploads = Array.from(file.files);};
+      label.append(file);group.append(label);
+    }
+    const options = timed ? [["text","Effect text"],["from","Start (s)"],["to","End (s)"]] : [["text","Effect text"]];
+    for (const [key,label] of options) {
+      const field = textNode("label", label);
+      const input = document.createElement("input");
+      input.type = key === "text" ? "text" : "number";
+      input.placeholder = key === "text" ? "Use preset" : (key === "from" ? "0" : "Scene end");
+      input.maxLength = 160;
+      input.step = "any";
+      input.min = "0";
+      input.value = layer[key] ?? "";
+      input.oninput = () => {
+        if (!input.value) delete layer[key];
+        else layer[key] = key === "text" ? input.value : Number(input.value);
+      };
+      field.append(input);
+      group.append(field);
+    }
+    for (const label of ["Earlier","Remove"]) {
+      if (label === "Earlier" && i === 0) continue;
+      const btn = textNode("button",label,"secondary");
+      btn.type = "button";
+      btn.onclick = () => {
+        if (label === "Earlier") [layers[i-1],layers[i]] = [layers[i],layers[i-1]];
+        else layers.splice(i,1);
+        drawLayers(container,layers,timed);
+      };
+      group.append(btn);
+    }
+    container.append(group);
+  }
+}
+function libraryTab(kind) {
+  libraryKind = kind;
+  for (const b of document.querySelectorAll("[data-kind]")) {
+    b.setAttribute("aria-pressed", String(b.dataset.kind === kind));
+    b.disabled = mode === "shorts" && b.dataset.kind === "graphic";
+  }
+  const group = el("libraryGroup");
+  group.replaceChildren(new Option("All categories",""));
+  for (const g of new Set(library.filter(x => x.kind === kind).map(x => x.group))) group.add(new Option(g,g));
+  el("librarySearch").value = "";
+  drawLibrary();
+}
+function openLibrary(scene, kind) {
+  targetScene = scene;
+  libraryTab(kind);
+  el("libraryDialog").showModal();
+  el("librarySearch").focus();
+}
+function applyItem(item) {
+  if (item.kind === "caption") {
+    el("captionStyle").value = item.id;
+    el("captions").checked = true;
+    el("settings").open = true;
+  } else if (item.kind === "effect") {
+    const dest = targetScene ? (targetScene.effects ||= []) : projectLayers;
+    if (dest.length >= 12) {el("libraryCount").textContent = "Twelve layers already selected."; return;}
+    dest.push({id:item.id});
+    drawLayers(el("projectLayers"),projectLayers,false);
+    showBoard();
+  } else {
+    const scene = targetScene || newScene();
+    scene.visual = "graphic";
+    scene.graphic = item.id;
+    if (!targetScene) {
+      scene.seconds = Number((item.frames / 30).toFixed(2));
+      storyboard.push(scene);
+    }
+    el("storyboard").open = true;
+    el("useScenes").checked = true;
+    el("fullLength").checked = false;
+    showBoard();
+  }
+  el("libraryDialog").close();
+}
+function drawLibrary() {
+  const query = el("librarySearch").value.trim().toLowerCase();
+  const group = el("libraryGroup").value;
+  const entries = library.filter(x => x.kind === libraryKind && (!group || x.group === group) &&
+    [x.name,x.id,x.group,x.recipe,x.description].join(" ").toLowerCase().includes(query));
+  const action = libraryKind === "guide" ? "Read guide" : libraryKind === "graphic" ? (targetScene ? "Replace scene" : "Add as scene") :
+    libraryKind === "caption" ? "Use caption style" : (targetScene ? "Apply to scene" : "Apply to production");
+  el("libraryCount").textContent = entries.length + " results · " + action;
+  const grid = el("libraryItems");
+  grid.replaceChildren();
+  for (const item of entries) {
+    if (item.kind === "guide") {
+      const link = textNode("a","","library-card guide-card");
+      link.href = "/guides/" + item.id;
+      link.target = "_blank";
+      link.rel = "noopener";
+      link.append(textNode("strong", item.name), textNode("small", item.group));
+      grid.append(link);
+      continue;
+    }
+    const btn = textNode("button","","library-card");
+    btn.type = "button";
+    btn.setAttribute("aria-label", action + " · " + item.name);
+    const pic = document.createElement("img");
+    pic.src = "/previews/" + encodeURIComponent(item.id) + ".webp";
+    pic.alt = "";
+    pic.loading = "lazy";
+    btn.append(pic,textNode("strong",item.name),textNode("small",item.group));
+    btn.title = item.description || item.name;
+    btn.onclick = () => applyItem(item);
+    grid.append(btn);
+  }
+}
+el("browseLibrary").onclick = () => openLibrary(null,mode === "shorts" ? "effect" : "graphic");
+el("closeLibrary").onclick = () => el("libraryDialog").close();
+el("librarySearch").oninput = drawLibrary;
+el("libraryGroup").onchange = drawLibrary;
+for (const button of document.querySelectorAll("[data-kind]")) button.onclick = () => libraryTab(button.dataset.kind);
+
 function newScene() {
   return {
     visual: "title",
@@ -232,6 +385,9 @@ function editor(request, cut) {
   trim = cut || null;
   originalUrl = request?.url || "";
   el("form").reset();
+  el("keepRanges").value = (request?.keep || []).map(pair => pair.join(", ")).join("\n");
+  projectLayers = structuredClone(request?.effects || []);
+  drawLayers(el("projectLayers"), projectLayers, false);
   storyboard = structuredClone(request?.scenes || []);
   el("useScenes").checked = storyboard.length > 0;
   el("storyboard").open = storyboard.length > 0;
@@ -438,7 +594,25 @@ el("form").onsubmit = async (event) => {
   el("error").textContent = "";
   el("submit").disabled = true;
   try {
-    const req = { mode };
+    async function resolveLayers(list) {
+      const resolved = [];
+      for (const {uploads, ...layer} of list) {
+        if (uploads?.length) {
+          if (uploads.length > 12) throw Error("Choose up to twelve card images.");
+          layer.cards = await Promise.all(uploads.map(upload));
+        }
+        resolved.push(layer);
+      }
+      return resolved;
+    }
+    const req = { mode, effects: await resolveLayers(projectLayers) };
+    if (mode === "create" && el("keepRanges").value.trim()) {
+      req.keep = el("keepRanges").value.trim().split(/\n+/).map(line => {
+        const parts = line.trim().split(/[\s,]+/).map(Number);
+        if (parts.length !== 2 || !parts.every(Number.isFinite)) throw Error("Enter one start and end time per line.");
+        return parts;
+      });
+    }
     for (const id of keys) req[id] = el(id).value;
     req.ratios = Array.from(
       el("layouts").querySelectorAll("input:checked"),
@@ -454,13 +628,14 @@ el("form").onsubmit = async (event) => {
         mobileUpload: phoneFile,
         ...s
       } of storyboard) {
-        if (file && s.visual === "website") s.image = await upload(file);
-        if (phoneFile && s.visual === "website")
-          s.portraitImage = await upload(phoneFile);
-        if (s.visual !== "website") {
+        const acceptsScreen = ["graphic", "website"].includes(s.visual);
+        if (file && acceptsScreen) s.image = await upload(file);
+        if (phoneFile && acceptsScreen) s.portraitImage = await upload(phoneFile);
+        if (!acceptsScreen) {
           delete s.image;
           delete s.portraitImage;
         }
+        if (s.effects) s.effects = await resolveLayers(s.effects);
         req.scenes.push(s);
       }
     }
@@ -516,7 +691,10 @@ for (const key of files)
   };
 (async () => {
   try {
-    catalog = await api("/brand/catalog.json");
+    let guides;
+    [catalog, library, guides] = await Promise.all([api("/brand/catalog.json"), api("/api/library"), api("/api/guides").catch(() => [])]);
+    library.push(...guides);
+    for (const style of library.filter(x => x.kind === "caption")) el("captionStyle").add(new Option(style.name, style.id));
     logoOptions(el("logo").value);
     const status = await api("/api/status");
     el("runtime").textContent = "Local workstation";
@@ -533,6 +711,7 @@ for (const key of files)
     await refresh();
     if (/^[a-f0-9]{32}$/.test(location.hash.slice(1)))
       await show(location.hash.slice(1));
+    if (location.hash === "#library") openLibrary(null,"graphic");
     setInterval(refresh, 2200);
   } catch (e) {
     el("error").textContent = e.message;

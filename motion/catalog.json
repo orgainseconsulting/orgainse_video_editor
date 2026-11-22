@@ -1,0 +1,1960 @@
+[
+  {
+    "id": "noise",
+    "name": "Noise",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "reels pile up behind your head, one every quarter second",
+    "cardImages": true
+  },
+  {
+    "id": "lineup",
+    "name": "Lineup",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "numbered tiles fan out in an arc above your head"
+  },
+  {
+    "id": "locked-on",
+    "name": "Locked on",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "corner brackets snap onto your face and the camera follows you"
+  },
+  {
+    "id": "orbit",
+    "name": "Orbit",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your reels circle your head: in front at the bottom, behind you at the top",
+    "cardImages": true
+  },
+  {
+    "id": "lean-in",
+    "name": "Lean in",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a fast punch-in on one word"
+  },
+  {
+    "id": "backdrop-word",
+    "name": "Backdrop word",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a giant word drops in behind you"
+  },
+  {
+    "id": "spotlight",
+    "name": "Spotlight",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "kill the lights, keep you lit",
+    "looks": [
+      "sparkle"
+    ]
+  },
+  {
+    "id": "the-bill",
+    "name": "The bill",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "prints every instruction like a ticket, into the wall above your head"
+  },
+  {
+    "id": "moody",
+    "name": "Moody",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a moody colour grade: darker, softer, teal shadows"
+  },
+  {
+    "id": "swipe",
+    "name": "Swipe",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a before and after slider that sweeps across you"
+  },
+  {
+    "id": "todo",
+    "name": "Todo",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a checklist card beside your head that ticks off as you talk"
+  },
+  {
+    "id": "tap",
+    "name": "Tap",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a Follow button pops up and flips to Following"
+  },
+  {
+    "id": "pause-point",
+    "name": "Pause point",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "freeze the frame and point at something with a hand-drawn arrow"
+  },
+  {
+    "id": "uninstall",
+    "name": "Uninstall",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a glitchy uninstall bar that breaks the frame apart"
+  },
+  {
+    "id": "reel-frame",
+    "name": "Reel frame",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your video shrinks into an Instagram reel card"
+  },
+  {
+    "id": "shortcut-rain",
+    "name": "Shortcut rain",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "keyboard keys rain down behind you"
+  },
+  {
+    "id": "reject-stamp",
+    "name": "Reject stamp",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a big red stamp slams onto the screen"
+  },
+  {
+    "id": "countdown-flip",
+    "name": "Countdown flip",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a 3, 2, 1 flip clock above your head"
+  },
+  {
+    "id": "rabbit-hole",
+    "name": "Rabbit hole",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "the frame tunnels into itself, spinning"
+  },
+  {
+    "id": "cover-star",
+    "name": "Cover star",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "you become a magazine cover, with the title behind your head",
+    "looks": [
+      "editorial"
+    ]
+  },
+  {
+    "id": "scribble",
+    "name": "Scribble",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "marker doodles draw themselves around you"
+  },
+  {
+    "id": "red-collage",
+    "name": "Red collage",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "black and white you, a giant red word behind, kinetic type stacked beside you"
+  },
+  {
+    "id": "split-headline",
+    "name": "Split headline",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a clean headline card slides down and pushes you into the bottom of the frame"
+  },
+  {
+    "id": "pastel-word",
+    "name": "Pastel word",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a soft lavender backdrop, a giant word behind you and a profile card that gets followed"
+  },
+  {
+    "id": "check-pills",
+    "name": "Check pills",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "grid-paper room, your reels pinned behind you and blue pills that get clicked",
+    "cardImages": true
+  },
+  {
+    "id": "headline-box",
+    "name": "Headline box",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a punch-in with a clean two-line headline, the second line in a white box"
+  },
+  {
+    "id": "profile-wall",
+    "name": "Profile wall",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your profile grid fills the wall behind you while a counter ticks up",
+    "cardImages": true
+  },
+  {
+    "id": "tier-list",
+    "name": "Tier list",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a tier list drops in front of you and Claude flies into S tier"
+  },
+  {
+    "id": "broll-split",
+    "name": "Broll split",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "split screen: b-roll on top with a price-tag sticker, you on the bottom",
+    "cardImages": true
+  },
+  {
+    "id": "phone-fan",
+    "name": "Phone fan",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your reels fan out like a hand of phones in front of you, under a two-line headline",
+    "cardImages": true
+  },
+  {
+    "id": "dot-reveal",
+    "name": "Dot reveal",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your shot builds itself out of glowing dots, then snaps into the full picture"
+  },
+  {
+    "id": "headline-wall",
+    "name": "Headline wall",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a wall of your own reel headlines piles up behind your head, then your total views pop in front"
+  },
+  {
+    "id": "checklist",
+    "name": "Checklist",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a Claude task list builds under your chin: each step spins, then ticks green"
+  },
+  {
+    "id": "glass-widgets",
+    "name": "Glass widgets",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "frosted glass phone widgets and mini artifacts float around your head, with an Edited by Claude pill",
+    "looks": [
+      "simple"
+    ]
+  },
+  {
+    "id": "timeline",
+    "name": "Timeline",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a dark red cinematic grade with an editing timeline, a REC timecode and a glowing playhead",
+    "cardImages": true
+  },
+  {
+    "id": "comment-box",
+    "name": "Comment box",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "an Instagram comments sheet above your head types your word, posts it, gets a heart and your reply",
+    "looks": [
+      "bar"
+    ]
+  },
+  {
+    "id": "liquid-glass-graph",
+    "name": "Liquid glass graph",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a liquid glass card floats under your chin while a graph climbs and the number counts up",
+    "looks": [
+      "bento"
+    ]
+  },
+  {
+    "id": "carousel-spin",
+    "name": "Carousel spin",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your reels spin around you in a 3D carousel, then slow to a stop",
+    "cardImages": true
+  },
+  {
+    "id": "match-cut",
+    "name": "Match cut",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "news pages cut on one word, locked in place behind your head"
+  },
+  {
+    "id": "apple-toggles",
+    "name": "Apple toggles",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "an iPhone settings card under your chin flips its switches on, one line at a time"
+  },
+  {
+    "id": "led-sign",
+    "name": "Led sign",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "the lights drop and a glowing LED sign types itself out behind you"
+  },
+  {
+    "id": "slow-push",
+    "name": "Slow push",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a slow cinematic push-in from the wide shot to your face, the room melting out of focus"
+  },
+  {
+    "id": "over-the-shoulder-zoom",
+    "name": "Over the shoulder zoom",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "the camera pushes into one top corner, a liquid glass graph pops beside your head, then the other corner with a second graph"
+  },
+  {
+    "id": "messages",
+    "name": "Messages",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "iMessage notifications pop in one after another, creamy glass with a soft glow, stacking up above the bottom of the frame"
+  },
+  {
+    "id": "place-in-grid",
+    "name": "Place in grid",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "you shrink into the centre tile of your 3x3 profile grid on frosted glass, then 8 of your reels pop in around you, one per frame, view counts on every tile",
+    "cardImages": true
+  },
+  {
+    "id": "tape-label",
+    "name": "Tape label",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a strip of yellow tape with your line lands on your chest"
+  },
+  {
+    "id": "select-resize",
+    "name": "Select resize",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a blue selection box grabs your number and a cursor drags it bigger"
+  },
+  {
+    "id": "wave-trim",
+    "name": "Wave trim",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "the silent parts of your voice are trimmed away on screen until only your words are left"
+  },
+  {
+    "id": "huge-strike",
+    "name": "Huge strike",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "one huge serif word fills the wall behind you, then a red line crosses it out"
+  },
+  {
+    "id": "crayon-write",
+    "name": "Crayon write",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "a red crayon writes your word behind your head, then underlines it"
+  },
+  {
+    "id": "fan-build",
+    "name": "Fan build",
+    "kind": "effect",
+    "group": "Video effects",
+    "description": "your reel covers deal into a fan behind your head, one card at a time",
+    "cardImages": true
+  },
+  {
+    "id": "editorial-highlight",
+    "name": "Editorial Highlight",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "Magazine serif. The key word lands on a deep-red paper strip, with a little page number above the line."
+  },
+  {
+    "id": "pop-sticker",
+    "name": "Pop Sticker",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "Loud colour blocks with black outlines and hard shadows, little stickers popping in around them. Key words go purple and get a star."
+  },
+  {
+    "id": "paper-plane",
+    "name": "Paper Plane",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "A paper plane in your highlight colour flies across and pulls the line in behind it. Key words in the same colour."
+  },
+  {
+    "id": "smoke-exit",
+    "name": "Smoke Exit",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "Chunky sans words, key word in your highlight colour. When the line ends it dissolves into smoke, and the key word smokes in its own colour."
+  },
+  {
+    "id": "explosive-breakup",
+    "name": "Explosive Breakup",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "Big condensed caps hold for the line, then every letter blasts outward. The key word explodes in sparks of your highlight colour."
+  },
+  {
+    "id": "rolodex-flip",
+    "name": "Rolodex Flip",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "The line builds word by word and each new word flips down like a rolodex card. Key words in your highlight colour."
+  },
+  {
+    "id": "retro-typer",
+    "name": "Retro Typer",
+    "kind": "caption",
+    "group": "Animated captions",
+    "description": "Typewriter letters typed in time with your voice, with a blinking block cursor. Key words type in your highlight colour. Option: a soft hazy box behind."
+  },
+  {
+    "id": "Basic3DScene",
+    "name": "Basic3 DScene",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "basic-3d-scene",
+    "source": "shotcraft/demos/camera/basic-3d-scene/Basic3DScene.tsx",
+    "frameExport": "BASIC_3D_SCENE_DURATION",
+    "frames": 225
+  },
+  {
+    "id": "CrashImpactReal",
+    "name": "Crash Impact Real",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "crash-zoom-punch",
+    "source": "shotcraft/demos/camera/crash-zoom-punch/CrashImpactReal.tsx",
+    "frameExport": "CRASHIMPACT_DUR",
+    "frames": 11
+  },
+  {
+    "id": "CrashZoomReal",
+    "name": "Crash Zoom Real",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "crash-zoom-punch",
+    "source": "shotcraft/demos/camera/crash-zoom-punch/CrashZoomReal.tsx",
+    "frameExport": "CRASHZOOM_DUR",
+    "frames": 11
+  },
+  {
+    "id": "CursorFlyover",
+    "name": "Cursor Flyover",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "cursor-flyover",
+    "source": "shotcraft/demos/camera/cursor-flyover/CursorFlyover.tsx",
+    "frameExport": "CURSOR_FLYOVER_DURATION",
+    "frames": 240
+  },
+  {
+    "id": "MultiplaneReal",
+    "name": "Multiplane Real",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "depth-layer-moves",
+    "source": "shotcraft/demos/camera/depth-layer-moves/MultiplaneReal.tsx",
+    "frameExport": "MULTIPLANE_DUR",
+    "frames": 165
+  },
+  {
+    "id": "GrazeFaceTour",
+    "name": "Graze Face Tour",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "graze-face-tour",
+    "source": "shotcraft/demos/camera/graze-face-tour/GrazeFaceTour.tsx",
+    "frameExport": "GRAZE_FACE_TOUR_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "OverheadTabletopDrop",
+    "name": "Overhead Tabletop Drop",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "overhead-camera-moves",
+    "source": "shotcraft/demos/camera/overhead-camera-moves/OverheadTabletopDrop.tsx",
+    "frameExport": "OVERHEAD_TABLETOP_DROP_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "TiltReveal",
+    "name": "Tilt Reveal",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "overhead-camera-moves",
+    "source": "shotcraft/demos/camera/overhead-camera-moves/TiltReveal.tsx",
+    "frameExport": "TILT_REVEAL_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "DroneDiveLanding",
+    "name": "Drone Dive Landing",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "space-camera-moves",
+    "source": "shotcraft/demos/camera/space-camera-moves/DroneDiveLanding.tsx",
+    "frameExport": "DRONE_DIVE_LANDING_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "ExplodedView",
+    "name": "Exploded View",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "space-camera-moves",
+    "source": "shotcraft/demos/camera/space-camera-moves/ExplodedView.tsx",
+    "frameExport": "EXPLODED_VIEW_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "SteepTiltGlide",
+    "name": "Steep Tilt Glide",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "steep-tilt-glide",
+    "source": "shotcraft/demos/camera/steep-tilt-glide/SteepTiltGlide.tsx",
+    "frameExport": "STEEP_TILT_GLIDE_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "BulletTimeFreezeOrbit",
+    "name": "Bullet Time Freeze Orbit",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "tension-camera-moves",
+    "source": "shotcraft/demos/camera/tension-camera-moves/BulletTimeFreezeOrbit.tsx",
+    "frameExport": "BULLET_TIME_FREEZE_ORBIT_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "PullBackIsolation",
+    "name": "Pull Back Isolation",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "tension-camera-moves",
+    "source": "shotcraft/demos/camera/tension-camera-moves/PullBackIsolation.tsx",
+    "frameExport": "PULL_BACK_ISOLATION_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "Terminal3D",
+    "name": "Terminal3 D",
+    "kind": "graphic",
+    "group": "Camera & Space",
+    "recipe": "terminal-3d",
+    "source": "shotcraft/demos/camera/terminal-3d/Terminal3D.tsx",
+    "frameExport": "TERMINAL_3D_DURATION",
+    "frames": 246
+  },
+  {
+    "id": "BeforeAfterSliderScrub",
+    "name": "Before After Slider Scrub",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "before-after-slider-scrub",
+    "source": "shotcraft/demos/data/before-after-slider-scrub/BeforeAfterSliderScrub.tsx",
+    "frameExport": "BEFORE_AFTER_SLIDER_SCRUB_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "AxisRescaleShockV2",
+    "name": "Axis Rescale Shock V2",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "chart-live-moves",
+    "source": "shotcraft/demos/data/chart-live-moves/AxisRescaleShockV2.tsx",
+    "frameExport": "AXIS_RESCALE_SHOCK_V2_DURATION",
+    "frames": 192
+  },
+  {
+    "id": "OscilloscopeStreamV2",
+    "name": "Oscilloscope Stream V2",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "chart-live-moves",
+    "source": "shotcraft/demos/data/chart-live-moves/OscilloscopeStreamV2.tsx",
+    "frameExport": "OSCILLOSCOPE_STREAM_V2_DURATION",
+    "frames": 192
+  },
+  {
+    "id": "UnitDotSwarmRegroupV2",
+    "name": "Unit Dot Swarm Regroup V2",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "chart-live-moves",
+    "source": "shotcraft/demos/data/chart-live-moves/UnitDotSwarmRegroupV2.tsx",
+    "frameExport": "UNIT_DOT_SWARM_REGROUP_V2_DURATION",
+    "frames": 192
+  },
+  {
+    "id": "NeedleSweepSelftest",
+    "name": "Needle Sweep Selftest",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "gauge-readout-moves",
+    "source": "shotcraft/demos/data/gauge-readout-moves/NeedleSweepSelftest.tsx",
+    "frameExport": "NEEDLE_SWEEP_SELFTEST_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "TapeScrollFixedPointer",
+    "name": "Tape Scroll Fixed Pointer",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "gauge-readout-moves",
+    "source": "shotcraft/demos/data/gauge-readout-moves/TapeScrollFixedPointer.tsx",
+    "frameExport": "TAPE_SCROLL_FIXED_POINTER_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "BrakeReticleLock",
+    "name": "Brake Reticle Lock",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "scroll-brake-moves",
+    "source": "shotcraft/demos/data/scroll-brake-moves/BrakeReticleLock.tsx",
+    "frameExport": "BRAKE_RETICLE_LOCK_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ChangelogScrollBrake",
+    "name": "Changelog Scroll Brake",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "scroll-brake-moves",
+    "source": "shotcraft/demos/data/scroll-brake-moves/ChangelogScrollBrake.tsx",
+    "frameExport": "CHANGELOG_SCROLL_BRAKE_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "TimelineTravel",
+    "name": "Timeline Travel",
+    "kind": "graphic",
+    "group": "Data & Metrics",
+    "recipe": "timeline-travel",
+    "source": "shotcraft/demos/data/timeline-travel/TimelineTravel.tsx",
+    "frameExport": "TIMELINE_TRAVEL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "AssembleThenTypeFlyin",
+    "name": "Assemble Then Type Flyin",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "assemble-then-type-flyin",
+    "source": "shotcraft/demos/effects/assemble-then-type-flyin/AssembleThenTypeFlyin.tsx",
+    "frameExport": "ASSEMBLE_THEN_TYPE_FLYIN_DURATION",
+    "frames": 168
+  },
+  {
+    "id": "AuroraBloomBgFlip",
+    "name": "Aurora Bloom Bg Flip",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "aurora-bloom-bg-flip",
+    "source": "shotcraft/demos/effects/aurora-bloom-bg-flip/AuroraBloomBgFlip.tsx",
+    "frameExport": "AURORA_BLOOM_BG_FLIP_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "BrandFrameSnap",
+    "name": "Brand Frame Snap",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "brand-frame-snap",
+    "source": "shotcraft/demos/effects/brand-frame-snap/BrandFrameSnap.tsx",
+    "frameExport": "BRAND_FRAME_SNAP_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "ReticleLockOn",
+    "name": "Reticle Lock On",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "fui-hud-moves",
+    "source": "shotcraft/demos/effects/fui-hud-moves/ReticleLockOn.tsx",
+    "frameExport": "RETICLE_LOCK_ON_DURATION",
+    "frames": 90
+  },
+  {
+    "id": "FlylineArc",
+    "name": "Flyline Arc",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "glow-flyline-moves",
+    "source": "shotcraft/demos/effects/glow-flyline-moves/FlylineArc.tsx",
+    "frameExport": "FLYLINE_ARC_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "GlowOrbAmbient",
+    "name": "Glow Orb Ambient",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "glow-flyline-moves",
+    "source": "shotcraft/demos/effects/glow-flyline-moves/GlowOrbAmbient.tsx",
+    "frameExport": "GLOW_ORB_AMBIENT_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "OrbFlylineRelay",
+    "name": "Orb Flyline Relay",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "glow-flyline-moves",
+    "source": "shotcraft/demos/effects/glow-flyline-moves/OrbFlylineRelay.tsx",
+    "frameExport": "ORB_FLYLINE_RELAY_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "AttentionBounce",
+    "name": "Attention Bounce",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "icon-performance-moves",
+    "source": "shotcraft/demos/effects/icon-performance-moves/AttentionBounce.tsx",
+    "frameExport": "ATTENTION_BOUNCE_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "AnimeImpact",
+    "name": "Anime Impact",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "impact-feedback",
+    "source": "shotcraft/demos/effects/impact-feedback/AnimeImpact.tsx",
+    "frameExport": "ANIME_IMPACT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "HitCounter",
+    "name": "Hit Counter",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "impact-feedback",
+    "source": "shotcraft/demos/effects/impact-feedback/HitCounter.tsx",
+    "frameExport": "HIT_COUNTER_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "SheenSweepRetry",
+    "name": "Sheen Sweep Retry",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "light-play-moves",
+    "source": "shotcraft/demos/effects/light-play-moves/SheenSweepRetry.tsx",
+    "frameExport": "SHEEN_SWEEP_RETRY_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "SpotlightSweepReveal",
+    "name": "Spotlight Sweep Reveal",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "light-play-moves",
+    "source": "shotcraft/demos/effects/light-play-moves/SpotlightSweepReveal.tsx",
+    "frameExport": "SPOTLIGHT_SWEEP_REVEAL_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "RadialRipplePhoneChips",
+    "name": "Radial Ripple Phone Chips",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "radial-ripple-phone-chips",
+    "source": "shotcraft/demos/effects/radial-ripple-phone-chips/RadialRipplePhoneChips.tsx",
+    "frameExport": "RADIAL_RIPPLE_PHONE_CHIPS_DURATION",
+    "frames": 168
+  },
+  {
+    "id": "RisoMisregistrationHit",
+    "name": "Riso Misregistration Hit",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "riso-print-hits",
+    "source": "shotcraft/demos/effects/riso-print-hits/RisoMisregistrationHit.tsx",
+    "frameExport": "RISO_MISREGISTRATION_HIT_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "ScanBracketSweep",
+    "name": "Scan Bracket Sweep",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "scan-bracket-sweep",
+    "source": "shotcraft/demos/effects/scan-bracket-sweep/ScanBracketSweep.tsx",
+    "frameExport": "SCAN_BRACKET_SWEEP_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ScanlineAnnotateFocus",
+    "name": "Scanline Annotate Focus",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "scanline-annotate-focus",
+    "source": "shotcraft/demos/effects/scanline-annotate-focus/ScanlineAnnotateFocus.tsx",
+    "frameExport": "SCANLINE_ANNOTATE_FOCUS_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ScanlineAssembleFlyin",
+    "name": "Scanline Assemble Flyin",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "scanline-assemble-flyin",
+    "source": "shotcraft/demos/effects/scanline-assemble-flyin/ScanlineAssembleFlyin.tsx",
+    "frameExport": "SCANLINE_ASSEMBLE_FLYIN_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "ImpactBurstKit",
+    "name": "Impact Burst Kit",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "slam-entrance-moves",
+    "source": "shotcraft/demos/effects/slam-entrance-moves/ImpactBurstKit.tsx",
+    "frameExport": "IMPACT_BURST_KIT_DURATION",
+    "frames": 22
+  },
+  {
+    "id": "KanadaPerspectiveSnap",
+    "name": "Kanada Perspective Snap",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "slam-entrance-moves",
+    "source": "shotcraft/demos/effects/slam-entrance-moves/KanadaPerspectiveSnap.tsx",
+    "frameExport": "KANADA_PERSPECTIVE_SNAP_DURATION",
+    "frames": 22
+  },
+  {
+    "id": "ScoreSlam",
+    "name": "Score Slam",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "slam-entrance-moves",
+    "source": "shotcraft/demos/effects/slam-entrance-moves/ScoreSlam.tsx",
+    "frameExport": "SCORE_SLAM_DURATION",
+    "frames": 22
+  },
+  {
+    "id": "CornerSpotlightReveal",
+    "name": "Corner Spotlight Reveal",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "spotlight-sweep-moves",
+    "source": "shotcraft/demos/effects/spotlight-sweep-moves/CornerSpotlightReveal.tsx",
+    "frameExport": "CORNER_SPOTLIGHT_REVEAL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "GlowWakeSleepPanel",
+    "name": "Glow Wake Sleep Panel",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "spotlight-sweep-moves",
+    "source": "shotcraft/demos/effects/spotlight-sweep-moves/GlowWakeSleepPanel.tsx",
+    "frameExport": "GLOW_WAKE_SLEEP_PANEL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "SlideSpotlightPan",
+    "name": "Slide Spotlight Pan",
+    "kind": "graphic",
+    "group": "Light & Emphasis",
+    "recipe": "spotlight-sweep-moves",
+    "source": "shotcraft/demos/effects/spotlight-sweep-moves/SlideSpotlightPan.tsx",
+    "frameExport": "SLIDE_SPOTLIGHT_PAN_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "AutolayoutGapDial",
+    "name": "Autolayout Gap Dial",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "autolayout-gap-dial",
+    "source": "shotcraft/demos/interaction/autolayout-gap-dial/AutolayoutGapDial.tsx",
+    "frameExport": "AUTOLAYOUT_GAP_DIAL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "DiagramCascadeBuild",
+    "name": "Diagram Cascade Build",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "canvas-materialize-moves",
+    "source": "shotcraft/demos/interaction/canvas-materialize-moves/DiagramCascadeBuild.tsx",
+    "frameExport": "DIAGRAM_CASCADE_BUILD_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "PanelToCanvasMaterialize",
+    "name": "Panel To Canvas Materialize",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "canvas-materialize-moves",
+    "source": "shotcraft/demos/interaction/canvas-materialize-moves/PanelToCanvasMaterialize.tsx",
+    "frameExport": "PANEL_TO_CANVAS_MATERIALIZE_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ChipGridSingleSelectBlackout",
+    "name": "Chip Grid Single Select Blackout",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "chip-grid-single-select-blackout",
+    "source": "shotcraft/demos/interaction/chip-grid-single-select-blackout/ChipGridSingleSelectBlackout.tsx",
+    "frameExport": "CHIP_GRID_SINGLE_SELECT_BLACKOUT_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "CursorCastEnsemble",
+    "name": "Cursor Cast Ensemble",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "collab-cursor-moves",
+    "source": "shotcraft/demos/interaction/collab-cursor-moves/CursorCastEnsemble.tsx",
+    "frameExport": "CURSOR_CAST_ENSEMBLE_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "GlassPillDictationTyping",
+    "name": "Glass Pill Dictation Typing",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "glass-pill-dictation-typing",
+    "source": "shotcraft/demos/interaction/glass-pill-dictation-typing/GlassPillDictationTyping.tsx",
+    "frameExport": "GLASS_PILL_DICTATION_TYPING_DURATION",
+    "frames": 100
+  },
+  {
+    "id": "HashtagToPillMaterialize",
+    "name": "Hashtag To Pill Materialize",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "hashtag-to-pill-materialize",
+    "source": "shotcraft/demos/interaction/hashtag-to-pill-materialize/HashtagToPillMaterialize.tsx",
+    "frameExport": "HASHTAG_TO_PILL_MATERIALIZE_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "PickerCarouselFeatureCycle",
+    "name": "Picker Carousel Feature Cycle",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "picker-carousel-feature-cycle",
+    "source": "shotcraft/demos/interaction/picker-carousel-feature-cycle/PickerCarouselFeatureCycle.tsx",
+    "frameExport": "PICKER_CAROUSEL_FEATURE_CYCLE_DURATION",
+    "frames": 108
+  },
+  {
+    "id": "SegmentedThumbHero",
+    "name": "Segmented Thumb Hero",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "segmented-thumb-hero",
+    "source": "shotcraft/demos/interaction/segmented-thumb-hero/SegmentedThumbHero.tsx",
+    "frameExport": "SEGMENTED_THUMB_HERO_DURATION",
+    "frames": 110
+  },
+  {
+    "id": "PaletteThemeRipple",
+    "name": "Palette Theme Ripple",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "theme-switch-moves",
+    "source": "shotcraft/demos/interaction/theme-switch-moves/PaletteThemeRipple.tsx",
+    "frameExport": "PALETTE_THEME_RIPPLE_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "ThemeSweepToggle",
+    "name": "Theme Sweep Toggle",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "theme-switch-moves",
+    "source": "shotcraft/demos/interaction/theme-switch-moves/ThemeSweepToggle.tsx",
+    "frameExport": "THEME_SWEEP_TOGGLE_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "TypeAndFilter",
+    "name": "Type And Filter",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "type-and-filter",
+    "source": "shotcraft/demos/interaction/type-and-filter/TypeAndFilter.tsx",
+    "frameExport": "TYPE_AND_FILTER_DURATION",
+    "frames": 190
+  },
+  {
+    "id": "VoiceWaveformLive",
+    "name": "Voice Waveform Live",
+    "kind": "graphic",
+    "group": "Interaction & Feature Demo",
+    "recipe": "voice-waveform-live",
+    "source": "shotcraft/demos/interaction/voice-waveform-live/VoiceWaveformLive.tsx",
+    "frameExport": "VOICE_WAVEFORM_LIVE_DURATION",
+    "frames": 172
+  },
+  {
+    "id": "CraneRiseReveal",
+    "name": "Crane Rise Reveal",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "crane-rise-reveal",
+    "source": "shotcraft/demos/opening/crane-rise-reveal/CraneRiseReveal.tsx",
+    "frameExport": "CRANE_RISE_REVEAL_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "DatavizLandscapeOpen",
+    "name": "Dataviz Landscape Open",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "dataviz-landscape-open",
+    "source": "shotcraft/demos/opening/dataviz-landscape-open/DatavizLandscapeOpen.tsx",
+    "frameExport": "DATAVIZ_LANDSCAPE_OPEN_DURATION",
+    "frames": 180
+  },
+  {
+    "id": "Fracture",
+    "name": "Fracture",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "fracture",
+    "source": "shotcraft/demos/opening/fracture/Fracture.tsx",
+    "frameExport": "FRACTURE_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "IconFieldColorize",
+    "name": "Icon Field Colorize",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "icon-field-colorize",
+    "source": "shotcraft/demos/opening/icon-field-colorize/IconFieldColorize.tsx",
+    "frameExport": "ICON_FIELD_COLORIZE_DURATION",
+    "frames": 45
+  },
+  {
+    "id": "LetterspaceMaterialize",
+    "name": "Letterspace Materialize",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "letterspace-materialize",
+    "source": "shotcraft/demos/opening/letterspace-materialize/LetterspaceMaterialize.tsx",
+    "frameExport": "LETTERSPACE_MATERIALIZE_DURATION",
+    "frames": 15
+  },
+  {
+    "id": "MagicianCardFlourish",
+    "name": "Magician Card Flourish",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "magician-card-flourish",
+    "source": "shotcraft/demos/opening/magician-card-flourish/MagicianCardFlourish.tsx",
+    "frameExport": "MAGICIAN_CARD_FLOURISH_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "OrbitRingTitleOpen",
+    "name": "Orbit Ring Title Open",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "orbit-ring-title-open",
+    "source": "shotcraft/demos/opening/orbit-ring-title-open/OrbitRingTitleOpen.tsx",
+    "frameExport": "ORBIT_RING_TITLE_OPEN_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "SpotlightHeroCard",
+    "name": "Spotlight Hero Card",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "spotlight-hero-card",
+    "source": "shotcraft/demos/opening/spotlight-hero-card/SpotlightHeroCard.tsx",
+    "frameExport": "SPOTLIGHT_HERO_CARD_DURATION",
+    "frames": 172
+  },
+  {
+    "id": "StrokeSegmentBuild",
+    "name": "Stroke Segment Build",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "stroke-segment-build",
+    "source": "shotcraft/demos/opening/stroke-segment-build/StrokeSegmentBuild.tsx",
+    "frameExport": "STROKE_SEGMENT_BUILD_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "TextAsMask",
+    "name": "Text As Mask",
+    "kind": "graphic",
+    "group": "Opening & Brand",
+    "recipe": "text-as-mask",
+    "source": "shotcraft/demos/opening/text-as-mask/TextAsMask.tsx",
+    "frameExport": "TEXT_AS_MASK_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "GrainDissolve",
+    "name": "Grain Dissolve",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "grain-dissolve",
+    "source": "shotcraft/demos/outro/grain-dissolve/GrainDissolve.tsx",
+    "frameExport": "GRAIN_DISSOLVE_DURATION",
+    "frames": 60
+  },
+  {
+    "id": "LogoShrinkWordmarkLockup",
+    "name": "Logo Shrink Wordmark Lockup",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "logo-shrink-wordmark-lockup",
+    "source": "shotcraft/demos/outro/logo-shrink-wordmark-lockup/LogoShrinkWordmarkLockup.tsx",
+    "frameExport": "LOGO_SHRINK_WORDMARK_LOCKUP_DURATION",
+    "frames": 132
+  },
+  {
+    "id": "NeonTripleMarquee",
+    "name": "Neon Triple Marquee",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "neon-triple-marquee",
+    "source": "shotcraft/demos/outro/neon-triple-marquee/NeonTripleMarquee.tsx",
+    "frameExport": "NEON_TRIPLE_MARQUEE_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "OutroGroupPhotoLaunch",
+    "name": "Outro Group Photo Launch",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "outro-group-photo-launch",
+    "source": "shotcraft/demos/outro/outro-group-photo-launch/OutroGroupPhotoLaunch.tsx",
+    "frameExport": "OUTRO_GROUP_PHOTO_LAUNCH_DURATION",
+    "frames": 145
+  },
+  {
+    "id": "UiStripAwayOutro",
+    "name": "Ui Strip Away Outro",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "ui-strip-away-outro",
+    "source": "shotcraft/demos/outro/ui-strip-away-outro/UiStripAwayOutro.tsx",
+    "frameExport": "UI_STRIP_AWAY_OUTRO_DURATION",
+    "frames": 144
+  },
+  {
+    "id": "IconFlipBloomLogo",
+    "name": "Icon Flip Bloom Logo",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "ui-to-brand-morph",
+    "source": "shotcraft/demos/outro/ui-to-brand-morph/IconFlipBloomLogo.tsx",
+    "frameExport": "ICON_FLIP_BLOOM_LOGO_DURATION",
+    "frames": 130
+  },
+  {
+    "id": "InputMorphsIntoLogo",
+    "name": "Input Morphs Into Logo",
+    "kind": "graphic",
+    "group": "Outro",
+    "recipe": "ui-to-brand-morph",
+    "source": "shotcraft/demos/outro/ui-to-brand-morph/InputMorphsIntoLogo.tsx",
+    "frameExport": "INPUT_MORPHS_INTO_LOGO_DURATION",
+    "frames": 130
+  },
+  {
+    "id": "PaparazziFlash",
+    "name": "Paparazzi Flash",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "beat-cut-moves",
+    "source": "shotcraft/demos/rhythm/beat-cut-moves/PaparazziFlash.tsx",
+    "frameExport": "PAPARAZZI_FLASH_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "BeatStepListThemeCycle",
+    "name": "Beat Step List Theme Cycle",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "beat-step-list-theme-cycle",
+    "source": "shotcraft/demos/rhythm/beat-step-list-theme-cycle/BeatStepListThemeCycle.tsx",
+    "frameExport": "BEAT_STEP_LIST_THEME_CYCLE_DURATION",
+    "frames": 30
+  },
+  {
+    "id": "ComicPanelSplit",
+    "name": "Comic Panel Split",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "panel-grid-moves",
+    "source": "shotcraft/demos/rhythm/panel-grid-moves/ComicPanelSplit.tsx",
+    "frameExport": "COMIC_PANEL_SPLIT_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "QuadSplitParallelScenes",
+    "name": "Quad Split Parallel Scenes",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "quad-split-parallel-scenes",
+    "source": "shotcraft/demos/rhythm/quad-split-parallel-scenes/QuadSplitParallelScenes.tsx",
+    "frameExport": "QUAD_SPLIT_PARALLEL_SCENES_DURATION",
+    "frames": 90
+  },
+  {
+    "id": "JumpCutPunchIn",
+    "name": "Jump Cut Punch In",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "rhythm-interrupt-moves",
+    "source": "shotcraft/demos/rhythm/rhythm-interrupt-moves/JumpCutPunchIn.tsx",
+    "frameExport": "JUMP_CUT_PUNCH_IN_DURATION",
+    "frames": 135
+  },
+  {
+    "id": "SakugaTimingShift",
+    "name": "Sakuga Timing Shift",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "sakuga-timing-shift",
+    "source": "shotcraft/demos/rhythm/sakuga-timing-shift/SakugaTimingShift.tsx",
+    "frameExport": "SAKUGA_TIMING_SHIFT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "FreezeAnnotateReal",
+    "name": "Freeze Annotate Real",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "speed-ramp-freeze",
+    "source": "shotcraft/demos/rhythm/speed-ramp-freeze/FreezeAnnotateReal.tsx",
+    "frameExport": "FREEZEANNOTATE_DUR",
+    "frames": 158
+  },
+  {
+    "id": "TrailerBumper",
+    "name": "Trailer Bumper",
+    "kind": "graphic",
+    "group": "Rhythm & Montage",
+    "recipe": "trailer-grammar-moves",
+    "source": "shotcraft/demos/rhythm/trailer-grammar-moves/TrailerBumper.tsx",
+    "frameExport": "TRAILER_BUMPER_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "BottomPushStackWipe",
+    "name": "Bottom Push Stack Wipe",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "bottom-push-stack-wipe",
+    "source": "shotcraft/demos/transition/bottom-push-stack-wipe/BottomPushStackWipe.tsx",
+    "frameExport": "BOTTOM_PUSH_STACK_WIPE_DURATION",
+    "frames": 170
+  },
+  {
+    "id": "CardFlipReveal",
+    "name": "Card Flip Reveal",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "card-flip-reveal",
+    "source": "shotcraft/demos/transition/card-flip-reveal/CardFlipReveal.tsx",
+    "frameExport": "CARD_FLIP_REVEAL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "CardFlockTumble",
+    "name": "Card Flock Tumble",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "card-flock-tumble",
+    "source": "shotcraft/demos/transition/card-flock-tumble/CardFlockTumble.tsx",
+    "frameExport": "CARD_FLOCK_TUMBLE_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "CircleMatchIris",
+    "name": "Circle Match Iris",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "circle-match-iris",
+    "source": "shotcraft/demos/transition/circle-match-iris/CircleMatchIris.tsx",
+    "frameExport": "CIRCLE_MATCH_IRIS_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "GradientTransition",
+    "name": "Gradient Transition",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "gradient-transition",
+    "source": "shotcraft/demos/transition/gradient-transition/GradientTransition.tsx",
+    "frameExport": "GRADIENT_TRANSITION_DURATION",
+    "frames": 200
+  },
+  {
+    "id": "LineCarryTransition",
+    "name": "Line Carry Transition",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "line-carry-transition",
+    "source": "shotcraft/demos/transition/line-carry-transition/LineCarryTransition.tsx",
+    "frameExport": "LINE_CARRY_TRANSITION_DURATION",
+    "frames": 190
+  },
+  {
+    "id": "MosaicReframe",
+    "name": "Mosaic Reframe",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "mosaic-reframe",
+    "source": "shotcraft/demos/transition/mosaic-reframe/MosaicReframe.tsx",
+    "frameExport": "MOSAIC_REFRAME_DURATION",
+    "frames": 214
+  },
+  {
+    "id": "BarnDoorSplit",
+    "name": "Barn Door Split",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "page-turn-transitions",
+    "source": "shotcraft/demos/transition/page-turn-transitions/BarnDoorSplit.tsx",
+    "frameExport": "BARN_DOOR_SPLIT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "InkBleedReveal",
+    "name": "Ink Bleed Reveal",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "print-texture-transitions",
+    "source": "shotcraft/demos/transition/print-texture-transitions/InkBleedReveal.tsx",
+    "frameExport": "INK_BLEED_REVEAL_DURATION",
+    "frames": 80
+  },
+  {
+    "id": "PortalWipeV2",
+    "name": "Portal Wipe V2",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "shot-transitions",
+    "source": "shotcraft/demos/transition/shot-transitions/PortalWipeV2.tsx",
+    "frameExport": "PORTAL_WIPE_V2_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "WhipBrakeReal",
+    "name": "Whip Brake Real",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "shot-transitions",
+    "source": "shotcraft/demos/transition/shot-transitions/WhipBrakeReal.tsx",
+    "frameExport": "WHIPBRAKE_DUR",
+    "frames": 150
+  },
+  {
+    "id": "GlitchDisplace",
+    "name": "Glitch Displace",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "tear-streak-transitions",
+    "source": "shotcraft/demos/transition/tear-streak-transitions/GlitchDisplace.tsx",
+    "frameExport": "GLITCH_DISPLACE_DURATION",
+    "frames": 40
+  },
+  {
+    "id": "InvisibleCut",
+    "name": "Invisible Cut",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "transition-hidden-cut",
+    "source": "shotcraft/demos/transition/transition-hidden-cut/InvisibleCut.tsx",
+    "frameExport": "INVISIBLE_CUT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "LightLeakBurn",
+    "name": "Light Leak Burn",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "transition-hidden-cut",
+    "source": "shotcraft/demos/transition/transition-hidden-cut/LightLeakBurn.tsx",
+    "frameExport": "LIGHT_LEAK_BURN_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "VersusSlam",
+    "name": "Versus Slam",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "transition-hidden-cut",
+    "source": "shotcraft/demos/transition/transition-hidden-cut/VersusSlam.tsx",
+    "frameExport": "VERSUS_SLAM_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "LetterformZoom",
+    "name": "Letterform Zoom",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "transition-travel",
+    "source": "shotcraft/demos/transition/transition-travel/LetterformZoom.tsx",
+    "frameExport": "LETTERFORM_ZOOM_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "WhiteFlashLogoSimplifyCut",
+    "name": "White Flash Logo Simplify Cut",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "white-flash-logo-simplify-cut",
+    "source": "shotcraft/demos/transition/white-flash-logo-simplify-cut/WhiteFlashLogoSimplifyCut.tsx",
+    "frameExport": "WHITE_FLASH_LOGO_SIMPLIFY_CUT_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "BlindsSlice",
+    "name": "Blinds Slice",
+    "kind": "graphic",
+    "group": "Transitions",
+    "recipe": "wipe-transitions",
+    "source": "shotcraft/demos/transition/wipe-transitions/BlindsSlice.tsx",
+    "frameExport": "BLINDS_SLICE_DURATION",
+    "frames": 20
+  },
+  {
+    "id": "BlurSlide",
+    "name": "Blur Slide",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "blur-slide",
+    "source": "shotcraft/demos/typography/blur-slide/BlurSlide.tsx",
+    "frameExport": "BLUR_SLIDE_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "BraceExpand",
+    "name": "Brace Expand",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "brace-expand",
+    "source": "shotcraft/demos/typography/brace-expand/BraceExpand.tsx",
+    "frameExport": "BRACE_EXPAND_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "BrandInkOpen",
+    "name": "Brand Ink Open",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "brand-ink-open",
+    "source": "shotcraft/demos/typography/brand-ink-open/BrandInkOpen.tsx",
+    "frameExport": "BRAND_INK_OPEN_DURATION",
+    "frames": 83
+  },
+  {
+    "id": "CountdownArcScatter",
+    "name": "Countdown Arc Scatter",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "countdown-arc-scatter",
+    "source": "shotcraft/demos/typography/countdown-arc-scatter/CountdownArcScatter.tsx",
+    "frameExport": "COUNTDOWN_ARC_SCATTER_DURATION",
+    "frames": 100
+  },
+  {
+    "id": "FlyingWords",
+    "name": "Flying Words",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "flying-words",
+    "source": "shotcraft/demos/typography/flying-words/FlyingWords.tsx",
+    "frameExport": "FLYING_WORDS_DURATION",
+    "frames": 180
+  },
+  {
+    "id": "GlitchCycle",
+    "name": "Glitch Cycle",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "glitch-cycle",
+    "source": "shotcraft/demos/typography/glitch-cycle/GlitchCycle.tsx",
+    "frameExport": "GLITCH_CYCLE_DURATION",
+    "frames": 168
+  },
+  {
+    "id": "GradientWordSweep",
+    "name": "Gradient Word Sweep",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "gradient-word-sweep",
+    "source": "shotcraft/demos/typography/gradient-word-sweep/GradientWordSweep.tsx",
+    "frameExport": "GRADIENT_WORD_SWEEP_DURATION",
+    "frames": 20
+  },
+  {
+    "id": "LeadWordZoomAssemble",
+    "name": "Lead Word Zoom Assemble",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "lead-word-zoom-assemble",
+    "source": "shotcraft/demos/typography/lead-word-zoom-assemble/LeadWordZoomAssemble.tsx",
+    "frameExport": "LEAD_WORD_ZOOM_ASSEMBLE_DURATION",
+    "frames": 84
+  },
+  {
+    "id": "MarkerUnderlineTitle",
+    "name": "Marker Underline Title",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "marker-underline-title",
+    "source": "shotcraft/demos/typography/marker-underline-title/MarkerUnderlineTitle.tsx",
+    "frameExport": "MARKER_UNDERLINE_TITLE_DURATION",
+    "frames": 12
+  },
+  {
+    "id": "OutlineWordFill",
+    "name": "Outline Word Fill",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "outline-word-fill",
+    "source": "shotcraft/demos/typography/outline-word-fill/OutlineWordFill.tsx",
+    "frameExport": "OUTLINE_WORD_FILL_DURATION",
+    "frames": 90
+  },
+  {
+    "id": "PaperTitleCard",
+    "name": "Paper Title Card",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "paper-title-card",
+    "source": "shotcraft/demos/typography/paper-title-card/PaperTitleCard.tsx",
+    "frameExport": "PAPER_TITLE_CARD_DURATION",
+    "frames": 55
+  },
+  {
+    "id": "PillChipSlotCycleHandled",
+    "name": "Pill Chip Slot Cycle Handled",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "pill-chip-slot-cycle-handled",
+    "source": "shotcraft/demos/typography/pill-chip-slot-cycle-handled/PillChipSlotCycleHandled.tsx",
+    "frameExport": "PILL_CHIP_SLOT_CYCLE_HANDLED_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "PillSlotCycle",
+    "name": "Pill Slot Cycle",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "pill-slot-cycle",
+    "source": "shotcraft/demos/typography/pill-slot-cycle/PillSlotCycle.tsx",
+    "frameExport": "PILL_SLOT_CYCLE_DURATION",
+    "frames": 12
+  },
+  {
+    "id": "TextColumnConverge",
+    "name": "Text Column Converge",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "text-column-converge",
+    "source": "shotcraft/demos/typography/text-column-converge/TextColumnConverge.tsx",
+    "frameExport": "TEXT_COLUMN_CONVERGE_DURATION",
+    "frames": 16
+  },
+  {
+    "id": "TitleDemoteToLabel",
+    "name": "Title Demote To Label",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "title-demote-to-label",
+    "source": "shotcraft/demos/typography/title-demote-to-label/TitleDemoteToLabel.tsx",
+    "frameExport": "TITLE_DEMOTE_TO_LABEL_DURATION",
+    "frames": 112
+  },
+  {
+    "id": "LetterformDriftAssembly",
+    "name": "Letterform Drift Assembly",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-assembly-moves",
+    "source": "shotcraft/demos/typography/type-assembly-moves/LetterformDriftAssembly.tsx",
+    "frameExport": "LETTERFORM_DRIFT_ASSEMBLY_DURATION",
+    "frames": 56
+  },
+  {
+    "id": "SplitTextStagger",
+    "name": "Split Text Stagger",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-assembly-moves",
+    "source": "shotcraft/demos/typography/type-assembly-moves/SplitTextStagger.tsx",
+    "frameExport": "SPLIT_TEXT_STAGGER_DURATION",
+    "frames": 56
+  },
+  {
+    "id": "TextOnPath",
+    "name": "Text On Path",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-assembly-moves",
+    "source": "shotcraft/demos/typography/type-assembly-moves/TextOnPath.tsx",
+    "frameExport": "TEXT_ON_PATH_DURATION",
+    "frames": 56
+  },
+  {
+    "id": "LetterDropPhysics",
+    "name": "Letter Drop Physics",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-entrance-moves",
+    "source": "shotcraft/demos/typography/type-entrance-moves/LetterDropPhysics.tsx",
+    "frameExport": "LETTER_DROP_PHYSICS_DURATION",
+    "frames": 116
+  },
+  {
+    "id": "FontWeightPump",
+    "name": "Font Weight Pump",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-rhythm-sync",
+    "source": "shotcraft/demos/typography/type-rhythm-sync/FontWeightPump.tsx",
+    "frameExport": "FONT_WEIGHT_PUMP_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "KaraokeFillSync",
+    "name": "Karaoke Fill Sync",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "type-rhythm-sync",
+    "source": "shotcraft/demos/typography/type-rhythm-sync/KaraokeFillSync.tsx",
+    "frameExport": "KARAOKE_FILL_SYNC_DURATION",
+    "frames": 165
+  },
+  {
+    "id": "TypewriterErrorRetype",
+    "name": "Typewriter Error Retype",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "typewriter-moves",
+    "source": "shotcraft/demos/typography/typewriter-moves/TypewriterErrorRetype.tsx",
+    "frameExport": "TYPEWRITER_ERROR_RETYPE_DURATION",
+    "frames": 160
+  },
+  {
+    "id": "VerticalWordRollBlurCycle",
+    "name": "Vertical Word Roll Blur Cycle",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "vertical-word-roll-blur-cycle",
+    "source": "shotcraft/demos/typography/vertical-word-roll-blur-cycle/VerticalWordRollBlurCycle.tsx",
+    "frameExport": "VERTICAL_WORD_ROLL_BLUR_CYCLE_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "WordRelayFilmstrip",
+    "name": "Word Relay Filmstrip",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "word-relay-filmstrip",
+    "source": "shotcraft/demos/typography/word-relay-filmstrip/WordRelayFilmstrip.tsx",
+    "frameExport": "WORD_RELAY_FILMSTRIP_DURATION",
+    "frames": 180
+  },
+  {
+    "id": "WordRelayGeometry",
+    "name": "Word Relay Geometry",
+    "kind": "graphic",
+    "group": "Typography & Title Cards",
+    "recipe": "word-relay-geometry",
+    "source": "shotcraft/demos/typography/word-relay-geometry/WordRelayGeometry.tsx",
+    "frameExport": "WORD_RELAY_GEOMETRY_DURATION",
+    "frames": 180
+  },
+  {
+    "id": "AvatarBracketCarousel",
+    "name": "Avatar Bracket Carousel",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "avatar-bracket-carousel",
+    "source": "shotcraft/demos/ui-entrance/avatar-bracket-carousel/AvatarBracketCarousel.tsx",
+    "frameExport": "AVATAR_BRACKET_CAROUSEL_DURATION",
+    "frames": 156
+  },
+  {
+    "id": "BezierSourceConvergeMerge",
+    "name": "Bezier Source Converge Merge",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "bezier-source-converge-merge",
+    "source": "shotcraft/demos/ui-entrance/bezier-source-converge-merge/BezierSourceConvergeMerge.tsx",
+    "frameExport": "BEZIER_SOURCE_CONVERGE_MERGE_DURATION",
+    "frames": 168
+  },
+  {
+    "id": "CardStack",
+    "name": "Card Stack",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "card-stack",
+    "source": "shotcraft/demos/ui-entrance/card-stack/CardStack.tsx",
+    "frameExport": "CARD_STACK_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "Carousel3D",
+    "name": "Carousel3 D",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "carousel-3d",
+    "source": "shotcraft/demos/ui-entrance/carousel-3d/Carousel3D.tsx",
+    "frameExport": "CAROUSEL_3D_DURATION",
+    "frames": 168
+  },
+  {
+    "id": "ClonerDepthEcho",
+    "name": "Cloner Depth Echo",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "cloner-depth-echo",
+    "source": "shotcraft/demos/ui-entrance/cloner-depth-echo/ClonerDepthEcho.tsx",
+    "frameExport": "CLONER_DEPTH_ECHO_DURATION",
+    "frames": 138
+  },
+  {
+    "id": "DeckDealFlyin",
+    "name": "Deck Deal Flyin",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "deck-deal-flyin",
+    "source": "shotcraft/demos/ui-entrance/deck-deal-flyin/DeckDealFlyin.tsx",
+    "frameExport": "DECK_DEAL_FLYIN_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "DocParkLeftPillDeal",
+    "name": "Doc Park Left Pill Deal",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "doc-park-left-pill-deal",
+    "source": "shotcraft/demos/ui-entrance/doc-park-left-pill-deal/DocParkLeftPillDeal.tsx",
+    "frameExport": "DOC_PARK_LEFT_PILL_DEAL_DURATION",
+    "frames": 174
+  },
+  {
+    "id": "DocumentTypewriterReveal",
+    "name": "Document Typewriter Reveal",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "document-typewriter-reveal",
+    "source": "shotcraft/demos/ui-entrance/document-typewriter-reveal/DocumentTypewriterReveal.tsx",
+    "frameExport": "DOCUMENT_TYPEWRITER_REVEAL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "DrawSvgTrace",
+    "name": "Draw Svg Trace",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "draw-svg-trace",
+    "source": "shotcraft/demos/ui-entrance/draw-svg-trace/DrawSvgTrace.tsx",
+    "frameExport": "DRAW_SVG_TRACE_DURATION",
+    "frames": 132
+  },
+  {
+    "id": "ContactShadowLift",
+    "name": "Contact Shadow Lift",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "element-body-moves",
+    "source": "shotcraft/demos/ui-entrance/element-body-moves/ContactShadowLift.tsx",
+    "frameExport": "CONTACT_SHADOW_LIFT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "IntegrationHubMap",
+    "name": "Integration Hub Map",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "integration-hub-map",
+    "source": "shotcraft/demos/ui-entrance/integration-hub-map/IntegrationHubMap.tsx",
+    "frameExport": "INTEGRATION_HUB_MAP_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ListReveal",
+    "name": "List Reveal",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "list-reveal",
+    "source": "shotcraft/demos/ui-entrance/list-reveal/ListReveal.tsx",
+    "frameExport": "LIST_REVEAL_DURATION",
+    "frames": 120
+  },
+  {
+    "id": "ListStackPress",
+    "name": "List Stack Press",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "list-stack-press",
+    "source": "shotcraft/demos/ui-entrance/list-stack-press/ListStackPress.tsx",
+    "frameExport": "LIST_STACK_PRESS_DURATION",
+    "frames": 88
+  },
+  {
+    "id": "NeonFrameForerun",
+    "name": "Neon Frame Forerun",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "neon-frame-forerun",
+    "source": "shotcraft/demos/ui-entrance/neon-frame-forerun/NeonFrameForerun.tsx",
+    "frameExport": "NEON_FRAME_FORERUN_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "NeonFrameForerunOrbit",
+    "name": "Neon Frame Forerun Orbit",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "neon-frame-orbit-drop",
+    "source": "shotcraft/demos/ui-entrance/neon-frame-orbit-drop/NeonFrameForerunOrbit.tsx",
+    "frameExport": "NEON_FRAME_FORERUN_ORBIT_DURATION",
+    "frames": 140
+  },
+  {
+    "id": "PageWaterfallWall",
+    "name": "Page Waterfall Wall",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "page-waterfall-wall",
+    "source": "shotcraft/demos/ui-entrance/page-waterfall-wall/PageWaterfallWall.tsx",
+    "frameExport": "PAGE_WATERFALL_WALL_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "ProductCardProgressiveAssemble",
+    "name": "Product Card Progressive Assemble",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "product-card-progressive-assemble",
+    "source": "shotcraft/demos/ui-entrance/product-card-progressive-assemble/ProductCardProgressiveAssemble.tsx",
+    "frameExport": "PRODUCT_CARD_PROGRESSIVE_ASSEMBLE_DURATION",
+    "frames": 172
+  },
+  {
+    "id": "RadialWave",
+    "name": "Radial Wave",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "radial-wave",
+    "source": "shotcraft/demos/ui-entrance/radial-wave/RadialWave.tsx",
+    "frameExport": "RADIAL_WAVE_DURATION",
+    "frames": 114
+  },
+  {
+    "id": "ResearchCardStackScroll",
+    "name": "Research Card Stack Scroll",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "research-card-stack-scroll",
+    "source": "shotcraft/demos/ui-entrance/research-card-stack-scroll/ResearchCardStackScroll.tsx",
+    "frameExport": "RESEARCH_CARD_STACK_SCROLL_DURATION",
+    "frames": 144
+  },
+  {
+    "id": "RowEmbed",
+    "name": "Row Embed",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "row-embed",
+    "source": "shotcraft/demos/ui-entrance/row-embed/RowEmbed.tsx",
+    "frameExport": "ROW_EMBED_DURATION",
+    "frames": 68
+  },
+  {
+    "id": "ValueStaggerGradient",
+    "name": "Value Stagger Gradient",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "value-stagger-gradient",
+    "source": "shotcraft/demos/ui-entrance/value-stagger-gradient/ValueStaggerGradient.tsx",
+    "frameExport": "VALUE_STAGGER_GRADIENT_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "BentoLightUp",
+    "name": "Bento Light Up",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "wall-reveal-moves",
+    "source": "shotcraft/demos/ui-entrance/wall-reveal-moves/BentoLightUp.tsx",
+    "frameExport": "BENTO_LIGHT_UP_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "WireframeDrawOn",
+    "name": "Wireframe Draw On",
+    "kind": "graphic",
+    "group": "UI Entrance & Showcase",
+    "recipe": "wall-reveal-moves",
+    "source": "shotcraft/demos/ui-entrance/wall-reveal-moves/WireframeDrawOn.tsx",
+    "frameExport": "WIREFRAME_DRAW_ON_DURATION",
+    "frames": 150
+  },
+  {
+    "id": "StudioTypeReveal",
+    "name": "Word reveal",
+    "kind": "graphic",
+    "group": "Editable brand scenes",
+    "source": "brand-scenes.tsx",
+    "editable": true,
+    "frames": 120
+  },
+  {
+    "id": "StudioProductFocus",
+    "name": "Product focus",
+    "kind": "graphic",
+    "group": "Editable brand scenes",
+    "source": "brand-scenes.tsx",
+    "editable": true,
+    "frames": 120
+  },
+  {
+    "id": "StudioBrandClose",
+    "name": "Brand close",
+    "kind": "graphic",
+    "group": "Editable brand scenes",
+    "source": "brand-scenes.tsx",
+    "editable": true,
+    "frames": 120
+  }
+]

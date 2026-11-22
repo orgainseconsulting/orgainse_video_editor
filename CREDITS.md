@@ -25,6 +25,8 @@ All seven unique source projects are pinned under `upstream/`. Git records their
 
 - **OpenCV contributors** provide the face detector and bundled Haar cascade used by the optional native face-framing workflow. Playwright drives the local browser for multi-section page capture. [OpenCV](https://github.com/opencv/opencv) · [Playwright](https://github.com/microsoft/playwright)
 
+The studio executes Shotcraft compositions with React and Remotion Player, runs Vibha Ramprakash’s registered effect functions with the original MediaPipe tracker and mounts the original caption styles in a local browser. Its three editable brand scenes use haidrrrry’s Remotion components. Recording cuts run Vaibhav’s `apply_keep.py` and retain the source time map. Offline caption rendering uses fonts supplied with the effects project, with local substitutions for some original web fonts. The generated gallery previews show the respective source designs. [Integration details](EFFECTS.md)
+
 ### Brand artwork
 
 ORGAINSE Consulting supplied the seven corporate logos and nine ORQYNE product logos in the brand directory. The ORQYNE title-card artwork includes the original “A product of ORGAINSE CONSULTING” credit. Third-party code license notices apply to their respective upstream code.

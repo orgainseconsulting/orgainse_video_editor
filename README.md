@@ -49,6 +49,8 @@ python orgainse.py doctor
 python orgainse.py create --title "Product walkthrough" --brief "Start on the website and close with a title card" --url "https://example.com" --script narration.txt --ratio 16:9 --wait
 python orgainse.py shorts --title "Founder highlights" --video interview.mp4 --brief "Product decisions and lessons" --count 3 --seconds 35 --ratio 9:16 --wait
 python orgainse.py create --title "ORQYNE launch" --url "https://orgainse.live" --brief "Show delivery governance and close on the guided pilot" --treatment showcase --ratio 16:9 --formats 9:16 4:5 1:1 --wait
+python orgainse.py library
+python orgainse.py create --title "Interview edit" --video interview.mp4 --full-length --keep-list ranges.json --transcript interview.srt --effect moody --caption-style retro-typer --wait
 python orgainse.py list
 ```
 
@@ -58,9 +60,9 @@ Pass `--storyboard plan.json` to render a scene list or the `shots` from an exis
 
 ### Upstream production toolkit
 
-The seven distinct upstream projects are pinned as Git submodules under `upstream/`. Use `git submodule update --init --depth 1` after cloning to retrieve the original trees, examples and license files. Shotcraft’s workbench, the upstream effect and animated-caption renderers, the Vaibhav edit scripts, the Remotion examples and FFrames have their own entry points and dependencies. The everyday studio runs the native workflows described above. See [CREDITS.md](CREDITS.md) for authors and source mapping.
+Open **Browse effects & motion** in a production or storyboard scene. The local library has animated previews for 150 Shotcraft compositions, 51 footage effects, seven animated caption styles and three editable brand scenes. Filter by category or search by name. Set effect order, text and timing in the layer editor. Card-based effects accept your uploaded images. The guide tab opens 16 original editing guides. [Open the local library](http://127.0.0.1:8765/#library) · [Source coverage and verification](EFFECTS.md)
 
-`-ProductionExtras` installs the pinned OpenCV face detector package and configures multi-section website capture. The Codex-bundled Python and Node runtimes work on this workstation. For a standalone install use 64-bit Python 3.10–3.13 and Node.js with npm for those extras.
+For the full Windows installation use 64-bit Python 3.10–3.12, Node.js with npm or pnpm, Git, and Chrome or Edge. `-ProductionExtras` initializes the seven pinned upstream projects, installs the local motion, effects and vision dependencies, and configures multi-section website capture. To add the motion library to an existing studio, run `powershell -ExecutionPolicy Bypass -File .\setup-effects.ps1` from the checkout. The first installation downloads dependencies. Installed compositions and footage effects render locally.
 
 ### Verification and credits
 

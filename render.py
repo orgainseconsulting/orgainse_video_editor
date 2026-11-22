@@ -11,10 +11,12 @@ from pathlib import Path
 from urllib.parse import urlsplit
 
 from core import AUDIO, IMAGES, MEDIA, RATIOS, duration, ff, load, probe, run, save, source
-from timeline import cached_scene, formats
+from timeline import cached_scene, formats, signature
+from keep_edit import cut_recording
+from effects import CAPTIONS, EDITABLE, caption_words, render_browser, render_layers
 from site_sections import sections
 from faces import face_track, tracked_filter
-from branding import brand_settings, composite, framing_filter
+from branding import BRAND_DIR, CATALOG as BRANDS, choose, brand_settings, composite, framing_filter
 from planner import make_plan
 from figma_source import frame_ref, fetch_frame, local_fig_preview
 from speech import captions, choose_shorts, clipped, srt, transcript_for, tts
@@ -180,11 +182,32 @@ def encode(
     motion="still",
     caption_style="boxed",
     treatment="standard",
+    graphic=None,
+    effects=(),
+    subhead="",
 ):
+    frames = max(1, round(length * 30))
+    if graphic:
+        screen = visual
+        visual = folder / "motion-source.mp4"
+        # Shotcraft comps are designed on a landscape stage. The normal framing path fits it to each export.
+        width = max(w, h)
+        native = graphic in EDITABLE
+        gw, gh = (w,h) if native else (width, round(width*9/16/2)*2)
+        logo = None
+        if native and branding[0] != "none":
+            logo = BRANDS[branding[0]][choose(*branding, "dark")]["file"]
+        render_browser(folder, browser(), dict(id=graphic, width=gw, height=gh, headline=headline, subhead=subhead,
+                       logo=str(BRAND_DIR / logo) if logo else None, frames=frames,
+                       screen=str(screen) if screen else None, output=str(visual)))
+        if native:
+            headline = ""
+        has_audio = False
     card = visual is None
     showcase = treatment == "showcase" and visual is not None and visual.suffix.lower() in IMAGES
     overlay = folder / (name + ".ass")
-    make_overlay(overlay, w, h, length, headline, cues, card, caption_style, showcase)
+    animated = caption_style in CAPTIONS and bool(cues)
+    make_overlay(overlay, w, h, length, headline, [] if animated else cues, card, caption_style, showcase)
     args = ["-hide_banner", "-loglevel", "error", "-nostdin", "-y", "-filter_complex_threads", "2"]
     if card:
         args += ["-f", "lavfi", "-i", f"color=c=0x162329:s={w}x{h}:r=30"]
@@ -239,11 +262,20 @@ def encode(
         zoom = "1+" + step if motion == "push-in" else "1.12-" + step
         img += f",zoompan=z='{zoom}':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':d=1:s={w}x{h}:fps=30"
     img += f",tpad=stop_mode=clone:stop_duration={length:.4f}"
+    next_input = 1 if audio == "0:a:0" else 2
+    if effects:
+        clean, effected = folder / "clean.mp4", folder / "effects.mp4"
+        ff("ffmpeg", *args, "-filter_complex", img + ",format=yuv420p[base]", "-map", "[base]",
+           "-an", "-frames:v", str(frames), "-c:v", "libx264", "-threads", "2", "-preset", "veryfast", clean)
+        render_layers(folder, clean, effected, effects, length)
+        args += ["-i", effected]
+        img = f"[{next_input}:v]null"
+        next_input += 1
     img, applied = composite(
         args,
         img,
-        1 if audio == "0:a:0" else 2,
-        *branding,
+        next_input,
+        *(("none","auto") if graphic in EDITABLE else branding),
         visual,
         start,
         length,
@@ -285,6 +317,14 @@ def encode(
         name + ".mp4",
     ]
     ff("ffmpeg", *args, cwd=folder)
+    if graphic in EDITABLE:
+        applied = {"brand": branding[0], "file": logo, "background": "dark"}
+    if animated:
+        target = folder / (name + ".mp4")
+        captioned = folder / "captioned.mp4"
+        render_browser(folder, browser(), dict(id=caption_style, width=w, height=h, frames=frames,
+                       words=caption_words(cues), input=str(target), output=str(captioned)))
+        os.replace(captioned, target)
     if track is not None:
         applied["faceSamples"] = len(track)
     return applied
@@ -369,6 +409,11 @@ def build(request, folder, report):
             site = sections(url, folder, request["brief"], browser(), image)
         if not image:
             image = source(site[0]["image"], IMAGES) if site else capture(url, folder)
+    cutmap = []
+    if request.get("keep"):
+        video, mapped_cues, cutmap = cut_recording(video, request["keep"], folder, None if narration else sidecar, report)
+        if not narration:
+            sidecar = mapped_cues
     info = probe(video) if video else None
     if video and not any(s["codec_type"] == "video" for s in info["streams"]):
         raise ValueError("The supplied recording contains no video stream.")
@@ -384,7 +429,7 @@ def build(request, folder, report):
     if image:
         captured[image] = hashlib.sha256(image.read_bytes()).hexdigest()
     if video:
-        captured[video] = video.name
+        captured[video] = signature([request["media"], request["keep"]]) if cutmap else video.name
     style = request.get("captionStyle", "boxed")
     treatment = request.get("treatment", "standard")
     plan_file = folder / "rough-cut.json"
@@ -445,7 +490,7 @@ def build(request, folder, report):
             a, b = s["start"], s["end"]
             decisions.append((video, a, b - a, None, "", captions(clipped(original, a, b)), "still", sounds))
             continue
-        picture = {"title": None, "website": image, "footage": video}[s["visual"]]
+        picture = {"title": None, "website": image, "graphic": image, "footage": video}[s["visual"]]
         if s.get("image"):
             picture = source(s["image"], IMAGES)
             captured[picture] = picture.name
@@ -469,12 +514,16 @@ def build(request, folder, report):
             lines = captions(clipped(original, start, start + length)) if picture and picture == video else []
         timeline.extend((elapsed + a, elapsed + b, t) for a, b, t in lines)
         title = s.get("headline", "")
-        if picture is None and not title:
+        if s["visual"] == "title" and not title:
             title = request["title"]
         burned = [] if picture is None and title == s.get("voice") and not narration else lines
         decisions.append(
             (picture, start, length, voice, title, burned, s.get("motion", "still"), sounds and not narration)
         )
+        for layer in s.get("effects", []):
+            for key in ("from", "to"):
+                if key in layer:
+                    layer[key] *= length / s["seconds"]
         s.update(start=start, seconds=length, outputStart=elapsed)
         elapsed = next_end
     outputs, layout_plans = [], {}
@@ -514,7 +563,7 @@ def build(request, folder, report):
             outputs.append(row)
 
         for i, (picture, start, length, voice, title, lines, motion, original_audio) in enumerate(decisions):
-            if w < h and shots[i].get("portraitImage") and shots[i].get("visual") == "website":
+            if w < h and shots[i].get("portraitImage") and shots[i].get("visual") in ("website", "graphic"):
                 picture = source(shots[i]["portraitImage"], IMAGES)
                 captured[picture] = picture.name
             report(f"Rendering {ratio} · {'clip' if short else 'scene'} {i+1} of {len(decisions)}")
@@ -537,6 +586,10 @@ def build(request, folder, report):
                 style,
                 treatment,
             ]
+            graphic = shots[i].get("graphic")
+            effects = [*request.get("effects", []), *shots[i].get("effects", [])]
+            if graphic or effects or style in CAPTIONS:
+                spec.extend(["upstream-fx-v3", graphic, effects, shots[i].get("subhead","")])
             mark, reused = cached_scene(
                 folder,
                 name,
@@ -558,6 +611,9 @@ def build(request, folder, report):
                     motion,
                     style,
                     treatment,
+                    graphic,
+                    effects,
+                    shots[i].get("subhead",""),
                 ),
                 lambda path: verify(path, w, h, length),
             )
@@ -602,6 +658,7 @@ def build(request, folder, report):
             {
                 "mode": request["mode"],
                 "source": request["media"],
+                **({"sourceTimeMap": cutmap} if cutmap else {}),
                 key: layout_plans[layouts[0]],
                 "layouts": layout_plans,
             },

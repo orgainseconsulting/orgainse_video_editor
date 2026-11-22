@@ -39,6 +39,7 @@ Get-VerifiedFile 'https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c7
 if ($ProductionExtras) {
     $studioPython = & (Join-Path $PSScriptRoot 'python-runtime.ps1')
     & (Join-Path $PSScriptRoot 'setup-vision.ps1') -Python $studioPython
+    & (Join-Path $PSScriptRoot 'setup-effects.ps1') -Python $studioPython
     $bundledNode = Join-Path (Split-Path (Split-Path $studioPython -Parent) -Parent) 'node\node_modules\playwright-core\package.json'
     if (-not (Test-Path -LiteralPath $bundledNode)) {
         $npm = Get-Command npm.cmd -ErrorAction SilentlyContinue

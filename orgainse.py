@@ -7,6 +7,8 @@ import sys
 import time
 from pathlib import Path
 
+from effects import CAPTION_OPTIONS, EFFECTS
+
 
 class Client:
     def __init__(self, port):
@@ -51,6 +53,7 @@ def main():
     sub = parser.add_subparsers(dest="command", required=True)
     sub.add_parser("doctor")
     sub.add_parser("list")
+    sub.add_parser("library", help="List renderable graphics, effects and captions")
     status = sub.add_parser("status")
     status.add_argument("id")
     status.add_argument("--wait", action="store_true")
@@ -78,12 +81,14 @@ def main():
         )
         cmd.add_argument("--music", help="Local music bed mixed below the dialogue")
         cmd.add_argument("--framing", choices=["fit", "crop", "face"], default="fit")
-        cmd.add_argument("--caption-style", choices=["boxed", "outline", "accent"], default="boxed")
+        cmd.add_argument("--caption-style", choices=CAPTION_OPTIONS, default="boxed")
+        cmd.add_argument("--effect", choices=sorted(EFFECTS), action="append", default=[], help="Apply an effect to every scene or short. Repeat to stack layers.")
         cmd.add_argument("--draft", action="store_true")
         cmd.add_argument("--no-burn", action="store_true")
         cmd.add_argument("--wait", action="store_true")
         if mode == "create":
             cmd.add_argument("--url")
+            cmd.add_argument("--keep-list", type=Path, help="JSON recording ranges in original seconds")
             cmd.add_argument("--image")
             cmd.add_argument("--narration", help="Recorded narration file")
             cmd.add_argument("--full-length", action="store_true", help="Retain the full source recording")
@@ -96,8 +101,8 @@ def main():
             cmd.add_argument("--trim", nargs=2, type=float, metavar=("START", "END"))
     args = parser.parse_args()
     client = Client(args.port)
-    if args.command in ("doctor", "list"):
-        data = client.request("GET", "/api/" + ("status" if args.command == "doctor" else "jobs"))
+    if args.command in ("doctor", "list", "library"):
+        data = client.request("GET", "/api/" + {"doctor":"status", "list":"jobs", "library":"library"}[args.command])
     elif args.command == "status":
         data = client.request("GET", "/api/jobs/" + args.id)
     else:
@@ -114,6 +119,7 @@ def main():
             "ratios": args.formats or [],
             "framing": args.framing,
             "captionStyle": args.caption_style,
+            "effects": [{"id": effect} for effect in args.effect],
             "fullLength": getattr(args, "full_length", False),
         }
         for flag, key in [
@@ -130,6 +136,9 @@ def main():
                 req[flag] = getattr(args, flag)
         if path := getattr(args, "script", None):
             req["script"] = path.read_text(encoding="utf-8-sig")
+        if keep := getattr(args, "keep_list", None):
+            spans = json.loads(keep.read_text(encoding="utf-8-sig"))
+            req["keep"] = spans["keep"] if isinstance(spans, dict) else spans
         if board := getattr(args, "storyboard", None):
             plan = json.loads(board.read_text(encoding="utf-8-sig"))
             req["scenes"] = plan["shots"] if isinstance(plan, dict) else plan

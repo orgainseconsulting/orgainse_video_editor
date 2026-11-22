@@ -10,6 +10,7 @@ import uuid
 from pathlib import Path
 
 from core import DATA, IMAGES, RATIOS, load, save, source, text_field
+from effects import GRAPHICS, layers
 
 
 def formats(primary, extra):
@@ -26,7 +27,7 @@ def scenes(value, sources):
         if not isinstance(shot, dict):
             raise ValueError("Expected a storyboard scene.")
         image = source(shot.get("image"), IMAGES)
-        if (image or shot.get("portraitImage")) and shot.get("visual") != "website":
+        if (image or shot.get("portraitImage")) and shot.get("visual") not in ("website", "graphic"):
             raise ValueError("Scene images require the product-screen visual.")
         if shot.get("visual") not in sources and not (image and shot.get("visual") == "website"):
             raise ValueError("A storyboard scene refers to a missing visual source.")
@@ -48,6 +49,14 @@ def scenes(value, sources):
                 voice=text_field(shot.get("voice", ""), 1600),
             )
         )
+        if shot["visual"] == "graphic":
+            graphic = shot.get("graphic")
+            if not isinstance(graphic, str) or graphic not in GRAPHICS:
+                raise ValueError("Choose a Shotcraft motion graphic from the library.")
+            result[-1]["graphic"] = graphic
+            result[-1]["subhead"] = text_field(shot.get("subhead",""), 200)
+        if shot.get("effects") is not None:
+            result[-1]["effects"] = layers(shot["effects"], length)
         if image:
             result[-1]["image"] = image.name
         if alt := source(shot.get("portraitImage"), IMAGES):

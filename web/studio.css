@@ -382,6 +382,33 @@ legend {
 body.shorts #storyboard {
   display: none;
 }
+.library-tools { margin: 18px 0; }
+#browseLibrary { border: 1px solid #71814b; color: var(--lime); }
+#libraryDialog { width: min(1050px, 94vw); max-height: 90vh; padding: 22px; border: 1px solid #525751; border-radius: 12px; background: #191d1e; color: #f3f4ef; }
+#libraryDialog::backdrop { background: rgb(0 0 0 / 68%); }
+.lib-head, .lib-tabs, .lib-filter { display:flex; align-items:center; gap:10px; }
+.lib-head { justify-content:space-between; }
+.lib-head h2 { margin:0; font-size:23px; }
+.lib-tabs { flex-wrap:wrap; margin:18px 0 13px; }
+.lib-tabs button { border:1px solid var(--border); border-radius:5px; background:#272c2c; padding:8px 12px; }
+.lib-tabs button[aria-pressed="true"] { background:var(--lime); color:#20251d; }
+.lib-filter input { flex:1; min-width:40px; }
+.lib-filter select { width:auto; max-width:46%; }
+#libraryCount { color:var(--soft); font-size:13px; }
+#libraryItems { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(170px,100%),1fr)); gap:12px; overflow:auto; max-height:52vh; padding:3px; }
+.library-card { display:flex; flex-direction:column; text-align:left; gap:5px; padding:0 0 10px; border:1px solid var(--border); border-radius:6px; background:#272c2c; overflow:hidden; }
+.library-card:hover,.library-card:focus-visible { border-color:var(--lime); }
+.guide-card { padding:15px 5px; text-decoration:none; color:inherit; justify-content:space-between; }
+.library-card img { display:block; width:100%; aspect-ratio:16/9; object-fit:contain; background:#111415; }
+.library-card strong,.library-card small { margin:0 9px; }
+.scene-fx, .effect-layer { grid-column:1/-1; }
+.effect-layer { display:flex; flex-wrap:wrap; align-items:end; background:#242a29; gap:8px; padding:10px; margin:7px 0; }
+.effect-layer strong { align-self:center; }
+.effect-layer label { flex:1 1 80px; min-width:0; }
+@media (max-width:600px) {
+  #libraryDialog { padding:12px; }
+  #libraryItems { grid-template-columns:repeat(2,minmax(0,1fr)); }
+}
 .shorts-only,
 [hidden] {
   display: none !important;

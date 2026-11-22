@@ -21,6 +21,9 @@ from urllib.parse import urlsplit
 from core import AUDIO, DATA, ID, IMAGES, MEDIA, RATIOS, ROOT, binary, load, model, save, source, text_field
 from site_sections import save_capture
 from timeline import formats, scenes
+from keep_edit import keep_list
+from edit_guides import GUIDES, GUIDE_FILES
+from effects import CAPTION_OPTIONS, CATALOG as MOTION_CATALOG, layers
 from render import browser, build
 from branding import BRAND_DIR, CATALOG, brand_settings
 from planner import planner_ready
@@ -78,7 +81,7 @@ def validate(value):
         ("mode", ("create", "shorts"), "create"),
         ("ratio", RATIOS, "16:9"),
         ("framing", ("fit", "crop", "face"), "fit"),
-        ("captionStyle", ("boxed", "outline", "accent"), "boxed"),
+        ("captionStyle", CAPTION_OPTIONS, "boxed"),
         ("treatment", ("standard", "showcase"), "standard"),
         ("planner", ("model", "template"), "model"),
         ("brand", ("auto", "orgainse", "orqyne", "none"), "auto"),
@@ -86,6 +89,12 @@ def validate(value):
         fields[key] = value.get(key, default)
         if fields[key] not in allowed:
             raise ValueError(f"Unknown {key}.")
+    fields["keep"] = keep_list(value.get("keep", []))
+    if fields["keep"] and (fields["mode"] != "create" or not fields["media"]):
+        raise ValueError("Keep ranges require a recording in Create a video.")
+    fields["effects"] = layers(value.get("effects", []))
+    if any("from" in layer or "to" in layer for layer in fields["effects"]):
+        raise ValueError("Set effect time ranges on individual storyboard scenes.")
     fields["ratios"] = formats(fields["ratio"], value.get("ratios", []))
     fields["logo"] = value.get("logo", "auto")
     _, fields["logo"] = brand_settings(fields)
@@ -109,7 +118,7 @@ def validate(value):
         source(fields[key], types)
     if value.get("scenes") is not None:
         available = (
-            ["title"]
+            ["title", "graphic"]
             + (["footage"] if fields["media"] else [])
             + (["website"] if fields["image"] or fields["url"] else [])
         )
@@ -225,6 +234,20 @@ class Handler(BaseHTTPRequestHandler):
                 "/brand/" + item["file"] for variants in CATALOG.values() for item in variants.values()
             }:
                 self.send(200, (BRAND_DIR / path.split("/")[-1]).read_bytes(), "image/png")
+            elif path == "/api/guides":
+                self.reply(GUIDES)
+            elif path.startswith("/guides/") and path[7:] in GUIDE_FILES:
+                guide = GUIDE_FILES[path[7:]]
+                if not guide.is_file():
+                    return self.reply({"error": "Initialize the pinned submodule to read this guide."},404)
+                self.send(200, guide.read_bytes(), "text/plain; charset=utf-8")
+            elif path == "/api/library":
+                self.reply(MOTION_CATALOG)
+            elif match := re.fullmatch(r"/previews/([A-Za-z0-9-]+)\.webp", path):
+                preview = ROOT / "web/previews" / (match[1] + ".webp")
+                if not preview.is_file():
+                    return self.reply({"error": "Preview unavailable"}, 404)
+                self.send(200, preview.read_bytes(), "image/webp")
             elif path == "/api/status":
                 self.reply(
                     {
