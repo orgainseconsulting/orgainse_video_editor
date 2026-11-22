@@ -33,6 +33,15 @@ class EffectsTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate(dict(brief="test",effects=[{"id":"moody","from":1}]))
 
+    def test_brief_shortlists_only_relevant_motion_choices(self):
+        from planner import motion_choices
+
+        self.assertEqual(motion_choices("Read messages on the timeline"), {"graphic": [], "effect": []})
+        shortlist = motion_choices("A kinetic product launch with the reject stamp effect and CrashZoomReal.")
+        self.assertEqual(set(shortlist["graphic"]), EDITABLE | {"CrashZoomReal"})
+        self.assertEqual(shortlist["effect"], ["reject-stamp"])
+        self.assertEqual(motion_choices("Apply the orbit filter")["effect"], ["orbit"])
+
     def test_keep_ranges_and_caption_word_timing(self):
         self.assertEqual(keep_list([[0,1],[2,3]]),[[0,1],[2,3]])
         for invalid in ([[2,3],[1,2]],[[0,0]],[[0,float("inf")]]):

@@ -1,4 +1,5 @@
 """Run the pinned effects on a bounded stream of frames with the original person/face tracker."""
+import copy
 import importlib.util
 import json
 import os
@@ -19,6 +20,18 @@ spec = importlib.util.spec_from_file_location("upstream_video_effects", ROOT / "
 fx = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(fx)
 np, cv2 = fx.np, fx.cv2
+
+
+def apply_effect(ctx, layer):
+    target = ctx
+    # The original tape placement caps the chest at 68% of frame height. In vertical
+    # footage a low-framed face can occupy that band and the face guard hides the label.
+    if layer.name == "tape-label" and ctx.fy + ctx.fw > ctx.H * .68:
+        top = max(0, min(round(ctx.fy - 1.35 * ctx.fw), ctx.H - 1))
+        target = copy.copy(ctx)
+        target.img, target.m = ctx.img[top:], ctx.m[top:]
+        target.H, target.fy = ctx.H - top, ctx.fy - top
+    fx.EFFECTS[layer.name][0](target, layer)
 
 
 def render(job):
@@ -75,7 +88,7 @@ def render(job):
                 c.fx,c.fy,c.fw = last_face * [w/aw,h/ah,w/aw]
                 for e in active:
                     c.lt = t-e.start
-                    fx.EFFECTS[e.name][0](c,e)
+                    apply_effect(c,e)
                 frame = (np.clip(c.img,0,1)*255+.5).astype(np.uint8)
             enc.stdin.write(frame.tobytes())
         enc.stdin.close()

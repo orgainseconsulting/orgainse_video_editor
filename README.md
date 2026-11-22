@@ -28,6 +28,8 @@ Under **Export settings**, attach a recorded voiceover or background music. A re
 
 Under **Storyboard**, set each scene’s source, starting time, duration, headline, narration and motion. Add, remove or reorder scenes and attach a different screenshot to each. **Edit scenes** loads a completed production’s decisions for revision. A spoken scene follows its recorded voice duration. An external voiceover distributes the timeline proportionally across the storyboard. Verified scene renders are cached by media and editing settings. An interrupted job resumes at studio startup and reuses completed scenes.
 
+The **Local AI** planner can select a composition or footage effect named in the scene brief. For example, “Open with Word reveal, show the dashboard with Product focus, and finish with Brand close.” For an animated launch brief it can choose the three branded scenes without requiring their names. Use the storyboard to set exact choices and layer timing.
+
 ### Cut a recording into shorts
 
 Choose **Cut into shorts**, attach the full recording and describe the topics you want. Set the target seconds and count under **Export settings**. The studio transcribes the recording locally unless you supply an SRT, VTT or supported timed JSON. Transcripts are cached across jobs for the same asset and speech model.

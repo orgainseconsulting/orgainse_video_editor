@@ -589,7 +589,7 @@ def build(request, folder, report):
             graphic = shots[i].get("graphic")
             effects = [*request.get("effects", []), *shots[i].get("effects", [])]
             if graphic or effects or style in CAPTIONS:
-                spec.extend(["upstream-fx-v3", graphic, effects, shots[i].get("subhead","")])
+                spec.extend(["upstream-fx-v4", graphic, effects, shots[i].get("subhead","")])
             mark, reused = cached_scene(
                 folder,
                 name,
