@@ -23,7 +23,7 @@ from site_sections import save_capture
 from timeline import formats, scenes
 from keep_edit import keep_list
 from edit_guides import GUIDES, GUIDE_FILES
-from effects import CAPTION_OPTIONS, CATALOG as MOTION_CATALOG, layers
+from effects import CAPTION_OPTIONS, CATALOG as MOTION_CATALOG, installed_renderers, layers
 from render import browser, build
 from branding import BRAND_DIR, CATALOG, brand_settings
 from planner import planner_ready
@@ -249,12 +249,14 @@ class Handler(BaseHTTPRequestHandler):
                     return self.reply({"error": "Preview unavailable"}, 404)
                 self.send(200, preview.read_bytes(), "image/webp")
             elif path == "/api/status":
+                available_browser = browser()
                 self.reply(
                     {
                         "ffmpeg": bool(binary("ffmpeg") and binary("ffprobe")),
                         "speech": bool(binary("whisper-cli") and model("whisper")),
                         "planner": planner_ready(),
-                        "browser": bool(browser()),
+                        "browser": bool(available_browser),
+                        **installed_renderers(available_browser),
                     }
                 )
             elif path == "/api/jobs":

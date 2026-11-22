@@ -4,6 +4,8 @@ A Windows video production studio that runs on your workstation. Give it a recor
 
 ### Start the studio
 
+On a fresh Windows installation, extract the complete source release and double-click **Setup Studio.cmd**. It installs the production dependencies and opens the studio. On later starts, double-click **Start Studio.cmd**. The workstation panel reports the status of the motion, footage-effect and animated-caption renderers.
+
 1. Use 64-bit Windows, Python 3.10 or newer, and an installed Windows desktop speech voice for script narration. The launcher can also use the Python runtime bundled with Codex.
 2. From the repository, run the setup command below. It installs portable FFmpeg/FFprobe, the whisper.cpp CPU runner and a small multilingual speech model inside `.local/`. It sets up Ollama, downloads a quantized 1.5B-parameter planning model, and registers the weights locally. The model file is about 1.12 GB. Ollama can keep another copy in its model store. The `-RenderOnly` switch installs the tools for script templates, transcription and shorts.
 3. Double-click **Start Studio.cmd**. The default address is [127.0.0.1:8765](http://127.0.0.1:8765). To use a particular Python installation, set `ORGAINSE_PYTHON` to the path of its executable. Keep the launcher window open while using a foreground studio.

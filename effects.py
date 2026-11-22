@@ -61,9 +61,26 @@ def caption_words(cues):
     return words
 
 
+def node_runtime():
+    return Path(shutil.which("node") or Path(sys.executable).resolve().parent.parent / "node/bin/node.exe")
+
+
+def installed_renderers(browser):
+    local_browser = bool(browser and node_runtime().is_file() and (ROOT / "motion/node_modules/playwright-core/package.json").is_file())
+    return {
+        "motion": local_browser and (LOCAL / "motion/graphics.js").is_file(),
+        "animatedCaptions": local_browser and (ROOT / "upstream/caption-styles/captions.js").is_file(),
+        "videoEffects": all(path.is_file() for path in (
+            LOCAL / "effects-python/mediapipe/__init__.py",
+            ROOT / "upstream/video-effects/scripts/fx.py",
+            ROOT / "upstream/video-effects/models/yunet.onnx",
+        )),
+    }
+
+
 def render_browser(folder, browser, spec):
-    node = shutil.which("node") or Path(sys.executable).resolve().parent.parent / "node/bin/node.exe"
-    if not browser or not (ROOT / "motion/node_modules/playwright-core").exists() or not Path(node).is_file():
+    node = node_runtime()
+    if not browser or not (ROOT / "motion/node_modules/playwright-core").exists() or not node.is_file():
         raise ValueError("Run setup-effects.ps1 to install the local motion and caption renderers.")
     if spec["id"] in GRAPHICS and not (LOCAL / "motion/graphics.js").exists():
         raise ValueError("Run setup-effects.ps1 to build the Shotcraft animations.")

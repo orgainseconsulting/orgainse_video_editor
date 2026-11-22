@@ -703,6 +703,9 @@ for (const key of files)
       speech: "Speech recognition",
       planner: "Scene planner",
       browser: "Website capture",
+      motion: "Motion scenes",
+      videoEffects: "Footage effects",
+      animatedCaptions: "Animated captions",
     })) {
       const li = textNode("li", name);
       li.append(textNode("span", status[key] ? "Ready" : "Setup needed"));
