@@ -1,5 +1,6 @@
 /.local/
 /motion/node_modules/
+/narration/node_modules/
 /studio-data/
 __pycache__/
 *.py[cod]

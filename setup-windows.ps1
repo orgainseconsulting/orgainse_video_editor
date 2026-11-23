@@ -6,15 +6,7 @@ $binaryRoot=Join-Path $toolsRoot 'bin'
 $modelRoot=Join-Path $toolsRoot 'models'
 New-Item -ItemType Directory -Force -Path $downloadRoot,$binaryRoot,$modelRoot | Out-Null
 
-function Get-VerifiedFile([string]$Url,[string]$Path,[string]$Digest) {
-    if ((Test-Path -LiteralPath $Path) -and (Get-FileHash -LiteralPath $Path).Hash -eq $Digest) { return }
-    $part=$Path+'.'+[Guid]::NewGuid().ToString('N')+'.part'
-    try {
-        curl.exe --fail --show-error --location --retry 2 --output $part $Url
-        if ($LASTEXITCODE -ne 0 -or (Get-FileHash -LiteralPath $part).Hash -ne $Digest) { throw "Download failed verification: $Url" }
-        Move-Item -Force -LiteralPath $part -Destination $Path
-    } finally { if(Test-Path -LiteralPath $part){ Remove-Item -LiteralPath $part } }
-}
+. (Join-Path $PSScriptRoot 'verified-download.ps1')
 if (-not ((Test-Path -LiteralPath (Join-Path $binaryRoot 'ffmpeg.exe')) -and (Test-Path -LiteralPath (Join-Path $binaryRoot 'ffprobe.exe')))) {
     $url='https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
     $digest=((Invoke-RestMethod -Uri ($url+'.sha256')) -split '\s+')[0]
@@ -36,6 +28,7 @@ if (-not (Get-ChildItem -LiteralPath $whisperDir -Recurse -Filter whisper-cli.ex
     Expand-Archive -LiteralPath $archive -DestinationPath $whisperDir -Force
 }
 Get-VerifiedFile 'https://huggingface.co/ggerganov/whisper.cpp/resolve/5359861c739e955e79d9a303bcbc70fb988958b1/ggml-tiny.bin' (Join-Path $modelRoot 'ggml-tiny.bin') 'be07e048e1e599ad46341c8d2a135645097a538221678b7acdd1b1919c6e1b21'
+& (Join-Path $PSScriptRoot 'setup-narration.ps1')
 if ($ProductionExtras) {
     $studioPython = & (Join-Path $PSScriptRoot 'python-runtime.ps1')
     & (Join-Path $PSScriptRoot 'setup-vision.ps1') -Python $studioPython

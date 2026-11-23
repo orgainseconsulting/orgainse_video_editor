@@ -66,14 +66,20 @@ def node_runtime():
 
 
 def installed_renderers(browser):
-    local_browser = bool(browser and node_runtime().is_file() and (ROOT / "motion/node_modules/playwright-core/package.json").is_file())
+    encoder = bool(binary("ffmpeg") and binary("ffprobe"))
+    local_browser = bool(encoder and browser and node_runtime().is_file() and
+                         (ROOT / "motion/node_modules/playwright-core/package.json").is_file())
     return {
         "motion": local_browser and (LOCAL / "motion/graphics.js").is_file(),
         "animatedCaptions": local_browser and (ROOT / "upstream/caption-styles/captions.js").is_file(),
-        "videoEffects": all(path.is_file() for path in (
+        "videoEffects": encoder and all(path.is_file() for path in (
             LOCAL / "effects-python/mediapipe/__init__.py",
+            LOCAL / "effects-python/cv2/__init__.py",
+            LOCAL / "effects-python/PIL/Image.py",
+            LOCAL / "effects-python/numpy/__init__.py",
             ROOT / "upstream/video-effects/scripts/fx.py",
             ROOT / "upstream/video-effects/models/yunet.onnx",
+            ROOT / "upstream/video-effects/models/selfie_segmenter.tflite",
         )),
     }
 

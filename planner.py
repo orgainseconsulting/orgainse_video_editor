@@ -163,7 +163,7 @@ def make_plan(request, sources, media_duration, logpath):
     prompt = (
         "You are the editor of a video. Return an edit decision list. Each shot has a visual source, a short "
         "on-screen headline, a start time within footage, and a length in seconds. Use the supplied footage when available. "
-        "Follow the scene brief in order. Only show claims supported by the supplied text. Empty headline is fine for footage. "
+        "Follow the scene brief in order. Only show claims supported by the supplied text. Write original English copy in British English with Oxford spelling. Empty headline is fine for footage. "
         "Every title card needs a headline. Copy requested screen text exactly. Use push-in or pull-back for a requested zoom. "
         "For a supplied narration script, write exactly one shot for each numbered passage, in order. "
         "For a title-only brief, tell the story with short distinct on-screen lines. Split total time among shots."

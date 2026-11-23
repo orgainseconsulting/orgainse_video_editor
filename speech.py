@@ -1,22 +1,65 @@
 """Local speech synthesis, transcription and editorial highlight selection."""
 
 import hashlib
+import json
+import shutil
 import re
 import sys
 from pathlib import Path
 
-from core import DATA, ROOT, binary, ff, load, model, run, save
+from core import DATA, LOCAL, ROOT, binary, ff, load, model, run, save
 
 sys.path.insert(0, str(ROOT / "third_party" / "digital_samba"))
 from highlights import sentences, tokens
 from transcript import segments
 
 
-def tts(shots, folder):
+VOICES = ("bf_emma", "bm_george", "system")
+
+
+def narration_status():
+    return {
+        "britishVoice": all(p.is_file() for p in (
+            LOCAL / "kokoro/kokoro-v1.0.onnx", LOCAL / "kokoro/voices-v1.0.bin",
+            LOCAL / "narration-python/kokoro_onnx/__init__.py",
+        )),
+        "proofreading": bool(shutil.which("node") and (ROOT / "narration/node_modules/harper.js/package.json").is_file()),
+    }
+
+
+def proofread_shots(shots, folder, brief, storyboard):
+    """Use one local checker per edit and keep requested display copy verbatim."""
+    quoted = set(re.findall(r'["“]([^"”\n]+)["”]', brief))
+    fields = [(shot, key) for shot in shots for key in ("voice", "headline", "subhead")
+              if shot.get(key) and (key == "voice" or (not storyboard and shot[key] not in quoted))]
+    originals = list(dict.fromkeys(shot[key] for shot, key in fields))
+    if not originals:
+        return
+    if not narration_status()["proofreading"]:
+        raise ValueError("Oxford English proofreading needs setup-narration.ps1. You can select Verbatim under Export settings.")
+    inputs = folder / "copy-inputs.json"
+    save(inputs, originals)
+    checked = json.loads(run([shutil.which("node"), ROOT / "narration/proofread.mjs", inputs],
+                             timeout=max(120, len(originals) * 4)))
+    if len(checked) != len(originals) or not all(isinstance(t, str) and t.strip() for t in checked):
+        raise ValueError("The local grammar checker returned incomplete copy.")
+    revised = dict(zip(originals, checked))
+    save(folder / "copy-edits.json", [{"original": a, "edited": b} for a, b in revised.items() if a != b])
+    for shot, key in fields:
+        shot[key] = revised[shot[key]]
+
+
+def tts(shots, folder, voice="bf_emma"):
     lines = [s["voice"] for s in shots]
     if not any(lines):
         return
-    save(folder / "voice-lines.json", {"lines": lines})
+    save(folder / "voice-lines.json", {"lines": lines, "voice": voice})
+    if voice != "system":
+        if voice not in VOICES or not narration_status()["britishVoice"]:
+            raise ValueError("Install the British voices with setup-narration.ps1 or choose the Windows voice in Export settings.")
+        run([sys.executable, "-B", ROOT / "narration/synthesise.py", folder],
+            timeout=max(180, sum(map(len, lines)) * 2))
+        return
     run(
         [
             "powershell.exe",

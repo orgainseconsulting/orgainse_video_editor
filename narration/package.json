@@ -1,0 +1,8 @@
+{
+  "name": "orgainse-script-editor",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "harper.js": "3.2.0"
+  }
+}

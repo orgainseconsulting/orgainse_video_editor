@@ -28,6 +28,7 @@ from effects import CAPTION_OPTIONS, CATALOG as MOTION_CATALOG, installed_render
 from render import browser, build
 from branding import BRAND_DIR, CATALOG, brand_settings
 from planner import planner_ready
+from speech import VOICES, narration_status
 
 JOBS = DATA / "jobs"
 ASSETS = DATA / "assets"
@@ -89,6 +90,8 @@ def validate(value):
         ("captionStyle", CAPTION_OPTIONS, "boxed"),
         ("treatment", ("standard", "showcase"), "standard"),
         ("planner", ("model", "template"), "model"),
+        ("voice", VOICES, "bf_emma"),
+        ("scriptStyle", ("oxford", "verbatim"), "oxford"),
         ("brand", ("auto", "orgainse", "orqyne", "none"), "auto"),
     ]:
         fields[key] = value.get(key, default)
@@ -265,6 +268,7 @@ class Handler(BaseHTTPRequestHandler):
                         "planner": planner_ready(),
                         "browser": bool(available_browser),
                         **installed_renderers(available_browser),
+                        **narration_status(),
                     }
                 )
             elif path == "/api/jobs":

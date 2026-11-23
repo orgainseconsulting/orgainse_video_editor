@@ -14,6 +14,8 @@ const keys = [
   "logo",
   "treatment",
   "captionStyle",
+  "voice",
+  "scriptStyle",
 ];
 let catalog = {};
 let library = [], projectLayers = [], targetScene = null, libraryKind = "graphic";
@@ -702,6 +704,8 @@ for (const key of files)
     for (const [key, name] of Object.entries({
       ffmpeg: "FFmpeg renderer",
       speech: "Speech recognition",
+      britishVoice: "British neural narration",
+      proofreading: "Oxford English proofreading",
       planner: "Scene planner",
       browser: "Website capture",
       motion: "Motion scenes",

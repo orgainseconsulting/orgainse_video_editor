@@ -8,6 +8,7 @@ import time
 from pathlib import Path
 
 from effects import CAPTION_OPTIONS, EFFECTS
+from speech import VOICES
 
 
 class Client:
@@ -91,6 +92,8 @@ def main():
             cmd.add_argument("--keep-list", type=Path, help="JSON recording ranges in original seconds")
             cmd.add_argument("--image")
             cmd.add_argument("--narration", help="Recorded narration file")
+            cmd.add_argument("--voice", choices=VOICES, default="bf_emma")
+            cmd.add_argument("--script-style", choices=("oxford", "verbatim"), default="oxford")
             cmd.add_argument("--full-length", action="store_true", help="Retain the full source recording")
             cmd.add_argument("--storyboard", type=Path, help="Scene list or saved edit-plan JSON")
             cmd.add_argument("--treatment", choices=["standard", "showcase"], default="standard")
@@ -131,6 +134,8 @@ def main():
         ]:
             if path := getattr(args, flag, None):
                 req[key] = client.asset(path)
+        if args.command == "create":
+            req.update(voice=args.voice, scriptStyle=args.script_style)
         for flag in ("url", "count", "planner", "trim", "treatment"):
             if getattr(args, flag, None) is not None:
                 req[flag] = getattr(args, flag)

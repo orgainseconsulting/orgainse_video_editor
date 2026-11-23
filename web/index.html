@@ -69,7 +69,7 @@
                   id="script"
                   rows="3"
                   maxlength="40000"
-                  placeholder="Spoken locally with a Windows voice. Leave blank to keep the recording’s audio."
+                  placeholder="Narrated in British English. Leave blank to keep the recording’s audio."
                 ></textarea>
               </label>
             </div>
@@ -89,6 +89,16 @@
                 maxlength="120"
                 placeholder="Use the script or website name"
             /></label>
+                <label class="create-only"
+                  >Narrator<select id="voice">
+                    <option value="bf_emma">Emma · British English</option>
+                    <option value="bm_george">George · British English</option>
+                    <option value="system">Windows system voice</option>
+                  </select></label>
+                <label class="create-only">Script editing<select id="scriptStyle">
+                    <option value="oxford">Oxford British English</option>
+                    <option value="verbatim">Read my script verbatim</option>
+                  </select></label>
                 <label class="create-only"
                   >Recorded voiceover<input
                     type="file"

@@ -42,16 +42,19 @@ def render(job):
                          **{k:e[k] for k in ("look","text") if e.get(k)}), fps) for e in job["layers"]]
     # Capture representative card images without retaining the source video in memory.
     if any(e.name in fx.CARD_FX for e in layers):
-        reader = cv2.VideoCapture(path)
         thumbs = []
-        for j in range(10):
-            reader.set(cv2.CAP_PROP_POS_MSEC, length * 1000 * (j + .5) / 10)
-            ok, frame = reader.read()
-            if ok:
-                image = fx.Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
-                image.thumbnail((640,640))
-                thumbs.append(image)
-        reader.release()
+        if any(e.name in fx.CARD_FX and not entry.get("cards") for e, entry in zip(layers, job["layers"])):
+            reader = cv2.VideoCapture(path)
+            try:
+                for j in range(10):
+                    reader.set(cv2.CAP_PROP_POS_MSEC, length * 1000 * (j + .5) / 10)
+                    ok, frame = reader.read()
+                    if ok:
+                        image = fx.Image.fromarray(cv2.cvtColor(frame, cv2.COLOR_BGR2RGB))
+                        image.thumbnail((640,640))
+                        thumbs.append(image)
+            finally:
+                reader.release()
         for e, entry in zip(layers, job["layers"]):
             if e.name in fx.CARD_FX:
                 e.cards = []
@@ -64,7 +67,8 @@ def render(job):
                     e.cards = thumbs
     scale = min(1, 540 / min(w, h))
     aw, ah = max(2, round(w*scale/2)*2), max(2, round(h*scale/2)*2)
-    trk = fx.Tracker(aw, ah)
+    # The colour grade only reads pixels and canvas dimensions.
+    trk = fx.Tracker(aw, ah) if any(layer.name != "moody" for layer in layers) else None
     last_face = np.array([aw*.5,ah*.33,aw*.15])
     # Stream the segmentation mask per frame so long scenes have bounded memory.
     args = [binary("ffmpeg"), "-v","error","-nostdin","-y","-f","rawvideo","-pix_fmt","rgb24",
@@ -77,14 +81,15 @@ def render(job):
             t = i/fps
             active = [e for e in layers if e.start <= t < e.end]
             if active:
-                small = cv2.resize(frame,(aw,ah),interpolation=cv2.INTER_AREA)
-                mask, face = trk(small,round(t*1000))
-                if face is not None:
-                    last_face = np.asarray(face) if i == 0 else .65*last_face + .35*np.asarray(face)
                 c = fx.Ctx()
+                if trk is not None:
+                    small = cv2.resize(frame,(aw,ah),interpolation=cv2.INTER_AREA)
+                    mask, face = trk(small,round(t*1000))
+                    if face is not None:
+                        last_face = np.asarray(face) if i == 0 else .65*last_face + .35*np.asarray(face)
+                    c.m = cv2.resize(mask,(w,h)).astype(np.float32)/255
                 c.W, c.H, c.t, c.fps = w,h,t,fps
                 c.img = frame.astype(np.float32)/255
-                c.m = cv2.resize(mask,(w,h)).astype(np.float32)/255
                 c.fx,c.fy,c.fw = last_face * [w/aw,h/ah,w/aw]
                 for e in active:
                     c.lt = t-e.start
@@ -98,7 +103,8 @@ def render(job):
         if enc.poll() is None:
             enc.kill()
             enc.wait()
-        trk.seg.close()
+        if trk is not None:
+            trk.seg.close()
 
 
 if __name__ == "__main__":

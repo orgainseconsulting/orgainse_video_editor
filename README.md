@@ -6,7 +6,7 @@ A Windows video production studio that runs on your workstation. Give it a recor
 
 On a fresh Windows installation, extract the complete source release and double-click **Setup Studio.cmd**. It installs the production dependencies and opens the studio. On later starts, double-click **Start Studio.cmd**. The workstation panel reports the status of the motion, footage-effect and animated-caption renderers.
 
-1. Use 64-bit Windows, Python 3.10 or newer, and an installed Windows desktop speech voice for script narration. The launcher can also use the Python runtime bundled with Codex.
+1. Use 64-bit Windows, Python 3.10–3.12 for the full effects installation, and Node.js with npm or pnpm. The launcher also supports the Python and Node runtimes bundled with Codex.
 2. From the repository, run the setup command below. It installs portable FFmpeg/FFprobe, the whisper.cpp CPU runner and a small multilingual speech model inside `.local/`. It sets up Ollama, downloads a quantized 1.5B-parameter planning model, and registers the weights locally. The model file is about 1.12 GB. Ollama can keep another copy in its model store. The `-RenderOnly` switch installs the tools for script templates, transcription and shorts.
 3. Double-click **Start Studio.cmd**. The default address is [127.0.0.1:8765](http://127.0.0.1:8765). To use a particular Python installation, set `ORGAINSE_PYTHON` to the path of its executable. Keep the launcher window open while using a foreground studio.
 
@@ -18,11 +18,15 @@ The **Local AI** planner uses a model imported from GGUF into Ollama at `127.0.0
 
 ### Create a video
 
-Add a source recording, website URL or screenshot. Paste the narration script and put the editing instructions in their own field. Click **Render video**. The studio derives a production name, narrates the script with a local Windows voice, applies the selected edits and returns a playable MP4 with a **Save MP4** link. Script paragraphs give you numbered scenes. An explicit time range without a scene number uses seconds from the start of the finished video.
+Add a recording, website URL or screenshot, paste the narration script, and describe the edit. Click **Render video** to get a playable MP4 with a **Save MP4** link. Paragraphs give you numbered scenes. A time range without a scene number uses seconds from the start of the finished video.
+
+Emma is the default British neural narrator. George is available under **Export settings → Narrator**. Both speak ORQYNE as “OR-kine”, rhyming with “line”. The local model and voice pack download once (about 354 MB). For an existing installation run `setup-narration.ps1` and restart the studio. A recorded voiceover takes precedence.
+
+**Script editing** defaults to Oxford British English. The local checker corrects common agreement, article and repetition errors and applies spellings such as *colour*, *analyse* and *organize*. Captions for synthesized speech use the edited script. The edit plan records the changes. Select **Read my script verbatim** for approved copy. The same choices are available to the CLI through `--voice` and `--script-style`. The spelling convention follows [Oxford University Press guidance](https://www.oxfordreference.com/fileasset/files/QuickReference_AuthorGuidelines.pdf).
 
 For example, enter `Use Word reveal in scene 1. Use Product focus in scene 2. Add the Tape label effect reading "In review" from 1 to 3 seconds. Use Retro Typer captions. Export landscape and portrait.` Product focus uses the supplied website or screenshot. With **From editing instructions** selected, the editor exports both requested layouts. If the local planning model is unavailable, a supplied script can still render through the paragraph template with named edits. The job records the fallback in its planner log.
 
-Choose **Create a video**, enter a scene brief, add the sources you want, and click **Render video**. For example, “Open on the product page. Follow with a title card reading Built for teams. End on the founder.” The planner chooses from the available footage, screenshot and title cards. Add a narration script for a Windows voice. Separate paragraphs to mark scene boundaries. The spoken track sets the duration of narrated scenes. A footage-only job can keep the source sound.
+For a founder video, try “Open on the product page. Follow with a title card reading Built for teams. End on the founder.” The planner chooses from the available footage, screenshots and title cards. The spoken track sets the duration of narrated scenes. A footage-only job can keep the source sound.
 
 The website importer opens a fresh Edge or Chrome session, reads visible section headings and copies up to five screenshots into the local asset library. The scene planner can use that page text and choose matching screenshots. Reopen a saved production to reuse its capture offline. A basic installation without the section-capture dependency saves one viewport. Use a screen recording for a signed-in product interaction. For Figma, supply a node link with `FIGMA_TOKEN` configured, an exported frame, or a local `.fig` archive containing `thumbnail.png`. The archive importer uses the embedded document preview. Select a node link or upload frame exports for individual screens.
 

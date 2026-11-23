@@ -79,7 +79,7 @@ async function render(page, cdp, item, opts) {
       }
       if (errors.length) throw Error(errors[0]);
       if (caption || sourceFrame !== previousFrame) {
-        const shot = await cdp.send("Page.captureScreenshot",{format:"png",fromSurface:true});
+        const shot = await cdp.send("Page.captureScreenshot",{format:"png",fromSurface:true,optimizeForSpeed:true});
         pixels = Buffer.from(shot.data,"base64");
         if (preview) images.add(shot.data);
         previousFrame = sourceFrame;
@@ -131,7 +131,7 @@ async function main() {
     for (const opts of jobs) {
       const item = byId.get(opts.id);
       if (!item || !["graphic","caption"].includes(item.kind)) throw Error("Invalid animation ID");
-      try { await render(page,cdp,item,opts); }
+      try { await render(page,cdp,item,{...spec,...opts}); }
       catch(error) {
         if (!spec.items) throw error;
         failed.push([opts.id,error.message]);

@@ -20,7 +20,7 @@ from branding import BRAND_DIR, CATALOG as BRANDS, choose, brand_settings, compo
 from planner import make_plan
 from edit_directions import apply_layers, caption_choice, caption_layout, plan_graphics, read_directions
 from figma_source import frame_ref, fetch_frame, local_fig_preview
-from speech import captions, choose_shorts, clipped, srt, transcript_for, tts
+from speech import captions, choose_shorts, clipped, proofread_shots, srt, transcript_for, tts
 
 
 def browser():
@@ -473,6 +473,9 @@ def build(request, folder, report):
                         shot["image"] = site[i % len(site)]["image"]
         if directions:
             plan_graphics(shots, directions, bool(image), request["title"], site, bool(video))
+        if request.get("scriptStyle", "verbatim") == "oxford":
+            report("Checking the script in Oxford British English")
+            proofread_shots(shots, folder, request["brief"], bool(request.get("scenes")))
         if not request.get("scenes") and not request["script"] and not narration and video:
             scale = min(1, total / sum(s["seconds"] for s in shots))
             for s in shots:
@@ -491,13 +494,14 @@ def build(request, folder, report):
     else:
         original = []
     if not short and not narration and any(s.get("voice") for s in shots):
-        if (
-            not all((folder / f"voice-{i}.wav").is_file() for i, s in enumerate(shots) if s["voice"])
-            or not (folder / "voices-ready.json").exists()
-        ):
-            report("Recording narration on this workstation")
-            tts(shots, folder)
-            save(folder / "voices-ready.json", True)
+        voice = request.get("voice", "system")
+        voice_key = signature(["narration-v2", voice, [s["voice"] for s in shots]])
+        marker = folder / "voices-ready.json"
+        if (not marker.exists() or load(marker) != voice_key or
+            not all((folder / f"voice-{i}.wav").is_file() for i, s in enumerate(shots) if s["voice"])):
+            report("Recording British narration" if voice != "system" else "Recording Windows narration")
+            tts(shots, folder, voice)
+            save(marker, voice_key)
     voice_length = duration(probe(narration)) if narration else 0
     weight = sum(s["seconds"] for s in shots) if narration else 0
     timeline, decisions, elapsed, wanted_end = [], [], 0, 0
@@ -684,6 +688,9 @@ def build(request, folder, report):
                 "mode": request["mode"],
                 "source": request["media"],
                 "captionStyle": style,
+                "voice": "recorded" if narration else request.get("voice", "system") if any(s.get("voice") for s in shots) else "source",
+                "scriptStyle": request.get("scriptStyle", "verbatim"),
+                "copyEdits": load(folder / "copy-edits.json") if (folder / "copy-edits.json").exists() else [],
                 "captionLayout": caption_options,
                 "captions": request["captions"],
                 **({"sourceTimeMap": cutmap} if cutmap else {}),
