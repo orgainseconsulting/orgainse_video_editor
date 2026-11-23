@@ -343,22 +343,23 @@ function setMode(next, defaults = true) {
     b.setAttribute("aria-pressed", String(active));
   });
   el("brieflabel").firstElementChild.textContent =
-    mode === "shorts" ? "Highlight brief" : "Scene brief";
+    mode === "shorts" ? "Highlight brief" : "Editing instructions";
   el("brief").placeholder =
     mode === "shorts"
       ? "Find distinct moments about pricing and results. Keep each thought complete."
-      : "Open with the founder, cut to the product screen, then end on the call to action.";
+      : "Use Product focus in scene 1. Add the Tape label effect from 1 to 3 seconds. Use Retro Typer captions.";
   el("targetlabel").textContent =
     mode === "shorts" ? "Seconds per short" : "Target seconds";
   el("submit").firstChild.textContent =
     mode === "shorts" ? "Render shorts " : "Render video ";
   if (defaults) {
-    el("ratio").value = mode === "shorts" ? "9:16" : "16:9";
+    el("ratio").value = "auto";
     trim = null;
   }
 }
 function monitor(url, name, ratio, poster = "") {
   const v = el("player");
+  if (ratio === "auto") ratio = mode === "shorts" ? "9:16" : "16:9";
   v.parentElement.style.aspectRatio = ratio.replace(":", " / ");
   if (poster) v.poster = poster;
   else v.removeAttribute("poster");
@@ -490,7 +491,7 @@ function detail(j) {
   el("editScenes").onclick = async () => {
     try {
       const plan = await api(base + "edit-plan.json");
-      editor({ ...j.request, fullLength: false, scenes: plan.shots });
+      editor({ ...j.request, captionStyle: plan.captionStyle || j.request.captionStyle, fullLength: false, scenes: plan.shots });
     } catch (e) {
       el("progress").textContent = e.message;
     }
@@ -684,7 +685,7 @@ for (const key of ["title", "brief", "script", "url"])
     if (el("logo").dataset.brand !== previous) el("logo").value = "auto";
   });
 el("ratio").onchange = () =>
-  (el("monitorformat").textContent = el("ratio").value);
+  (el("monitorformat").textContent = el("ratio").value === "auto" ? "From instructions" : el("ratio").value);
 for (const key of files)
   el(key).onchange = () => {
     if (el(key).files.length) el(key + "-note").textContent = "";

@@ -57,11 +57,14 @@ async function render(page, cdp, item, opts) {
     });
     done.catch(() => {});
     const images = new Set();
+    let previousFrame = -1;
+    let pixels;
     for (let i=0; i<n; i++) {
       const fraction = preview ? samples[i] : i / Math.max(1,n-1);
+      const sourceFrame = Math.round(fraction * (frames-1));
       if (caption) {
         await page.evaluate(t => window.cap.seek(t), preview ? fraction * (opts.frames / 30) : i/30);
-      } else {
+      } else if (sourceFrame !== previousFrame) {
         await page.evaluate(async frame => {
           let timer;
           try {
@@ -72,12 +75,16 @@ async function render(page, cdp, item, opts) {
             clearTimeout(timer);
           }
         },
-          Math.round(fraction * (frames-1)));
+          sourceFrame);
       }
       if (errors.length) throw Error(errors[0]);
-      const shot = await cdp.send("Page.captureScreenshot",{format:"png",fromSurface:true});
-      if (preview) images.add(shot.data);
-      if (!proc.stdin.write(Buffer.from(shot.data,"base64"))) await Promise.race([once(proc.stdin,"drain"), done]);
+      if (caption || sourceFrame !== previousFrame) {
+        const shot = await cdp.send("Page.captureScreenshot",{format:"png",fromSurface:true});
+        pixels = Buffer.from(shot.data,"base64");
+        if (preview) images.add(shot.data);
+        previousFrame = sourceFrame;
+      }
+      if (!proc.stdin.write(pixels)) await Promise.race([once(proc.stdin,"drain"), done]);
     }
     proc.stdin.end();
     await done;

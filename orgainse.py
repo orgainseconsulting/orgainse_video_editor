@@ -59,7 +59,7 @@ def main():
     status.add_argument("--wait", action="store_true")
     for mode in ("create", "shorts"):
         cmd = sub.add_parser(mode)
-        cmd.add_argument("--title", required=True)
+        cmd.add_argument("--title", default="", help="Optional production name")
         cmd.add_argument("--brief", default="")
         cmd.add_argument("--brand", choices=["auto", "orgainse", "orqyne", "none"], default="auto")
         cmd.add_argument(
@@ -69,8 +69,8 @@ def main():
         cmd.add_argument("--transcript")
         cmd.add_argument(
             "--ratio",
-            choices=["16:9", "9:16", "4:5", "1:1"],
-            default="9:16" if mode == "shorts" else "16:9",
+            choices=["auto", "16:9", "9:16", "4:5", "1:1"],
+            default="auto",
         )
         cmd.add_argument("--seconds", type=int, default=30)
         cmd.add_argument(

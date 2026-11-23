@@ -6,7 +6,7 @@ import re
 import urllib.error
 import urllib.request
 
-from effects import CATALOG, EDITABLE
+from effects import BY_ID, CATALOG, EDITABLE
 
 
 def motion_choices(brief):
@@ -34,6 +34,22 @@ def motion_choices(brief):
                 continue
             choices[kind].append(item["id"])
             break
+    if re.search(r"\b(?:effect|animate|animation|transition|reveal|overlay|zoom|orbit|blur|stamp)\b", words):
+        ignore = {"with", "your", "that", "video", "footage", "effect", "scene", "show", "from", "using", "make", "apply"}
+        terms = {w for w in words.split() if len(w) > 3} - ignore
+        for kind in ("effect", "graphic"):
+            if choices[kind]:
+                continue
+            ranked = []
+            for item in CATALOG:
+                if item["kind"] != kind:
+                    continue
+                copy = " ".join((item["name"], item.get("description", ""), item.get("recipe", ""))).lower()
+                tokens = set(re.findall(r"[a-z]+", copy))
+                common = terms & tokens
+                if len(common) >= 2:
+                    ranked.append((len(common), item["id"]))
+            choices[kind] = [key for _, key in sorted(ranked, reverse=True)[:4]]
     return choices
 
 
@@ -81,6 +97,21 @@ def make_plan(request, sources, media_duration, logpath):
                 groups.append(group)
     else:
         groups = []
+    numbers = [int(n) for n in re.findall(r"\b(?:scene|shot|paragraph)\s*#?\s*(\d+)\b", request["brief"], re.I)]
+    requested_count = max(numbers, default=0)
+    if requested_count > 80:
+        raise ValueError("Split this production into chapters of up to 80 scripted scenes.")
+    while groups and len(groups) < requested_count:
+        # Prefer sentence boundaries, then punctuation, before dividing one long spoken passage.
+        idx = max(range(len(groups)), key=lambda i: len(groups[i].split()))
+        phrase = groups[idx]
+        mid = len(phrase) / 2
+        breaks = next((cuts for pattern in (r"(?<=[.!?])\s+", r"(?<=[,;:])\s+", r"\s+")
+                       if (cuts := list(re.finditer(pattern, phrase)))), [])
+        if not breaks:
+            break
+        split = min(breaks, key=lambda match: abs(match.start()-mid))
+        groups[idx:idx+1] = [phrase[:split.start()], phrase[split.end():]]
     if len(groups) > 80 or any(len(item) > 1600 for item in groups):
         raise ValueError("Divide this script into chapters or shorter sentences before rendering.")
     target = request["seconds"]
@@ -153,7 +184,7 @@ def make_plan(request, sources, media_duration, logpath):
         if choices:
             item_schema["properties"][kind] = {"type": "string", "enum": ["none", *choices]}
             item_schema["required"].append(kind)
-            specification[kind + "Choices"] = choices
+            specification[kind + "Choices"] = {key: BY_ID[key].get("description", BY_ID[key]["name"]) for key in choices}
     if options["graphic"]:
         prompt += (" Select a graphic for each shot when requested. A graphic replaces that shot's visual. "
                    "StudioTypeReveal is an animated title, StudioProductFocus displays the selected product screen, "
@@ -167,11 +198,20 @@ def make_plan(request, sources, media_duration, logpath):
         item = schema["properties"]["shots"]["items"]
         item["properties"]["screen"] = {"type": "integer", "minimum": 0, "maximum": len(pages) - 1}
         item["required"].append("screen")
+    def scripted_fallback(reason):
+        if logpath:
+            logpath.write_text(json.dumps({"planner": "script template", "reason": reason}), encoding="utf-8")
+        return make_plan(dict(request, planner="template"), sources, media_duration, logpath)
+
     if len(json.dumps(specification, ensure_ascii=False)) > 11500:
+        if groups:
+            return scripted_fallback("Script exceeds the local model context")
         raise ValueError(
             "Split this AI-planned production into chapters, or select Template for a longer script."
         )
     if not planner_ready():
+        if groups:
+            return scripted_fallback("Local model unavailable")
         raise ValueError(
             "The local ORGAINSE model is unavailable. Start Ollama and run setup-windows.ps1, or select Script template."
         )
@@ -191,7 +231,12 @@ def make_plan(request, sources, media_duration, logpath):
             "num_predict": min(2300, max(450, len(groups) * 80)),
         },
     }
-    response = ollama("chat", body, 600)
+    try:
+        response = ollama("chat", body, 600)
+    except (OSError, TimeoutError):
+        if groups:
+            return scripted_fallback("Local model request failed")
+        raise
     message = response["message"]["content"]
     logpath.write_text(
         json.dumps({"model": MODEL, "evaluationCount": response.get("eval_count")}), encoding="utf-8"

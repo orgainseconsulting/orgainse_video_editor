@@ -22,6 +22,7 @@ from core import AUDIO, DATA, ID, IMAGES, MEDIA, RATIOS, ROOT, binary, load, mod
 from site_sections import save_capture
 from timeline import formats, scenes
 from keep_edit import keep_list
+from edit_directions import requested_formats
 from edit_guides import GUIDES, GUIDE_FILES
 from effects import CAPTION_OPTIONS, CATALOG as MOTION_CATALOG, installed_renderers, layers
 from render import browser, build
@@ -76,7 +77,11 @@ def validate(value):
         "transcript": 60,
     }.items():
         fields[key] = text_field(value.get(key, ""), limit)
-    fields["title"] = fields["title"] or "Untitled production"
+    first_line = next((line.strip() for line in fields["script"].splitlines() if line.strip()), "")
+    fields["title"] = fields["title"] or first_line[:80] or urlsplit(fields["url"]).hostname or "Untitled production"
+    suggested = requested_formats(fields["brief"]) if value.get("ratio", "auto") == "auto" else []
+    if value.get("ratio", "auto") == "auto":
+        value = dict(value, ratio=next(iter(suggested), "9:16" if value.get("mode") == "shorts" else "16:9"))
     for key, allowed, default in [
         ("mode", ("create", "shorts"), "create"),
         ("ratio", RATIOS, "16:9"),
@@ -96,6 +101,7 @@ def validate(value):
     if any("from" in layer or "to" in layer for layer in fields["effects"]):
         raise ValueError("Set effect time ranges on individual storyboard scenes.")
     fields["ratios"] = formats(fields["ratio"], value.get("ratios", []))
+    fields["ratios"] = formats(fields["ratio"], [*fields["ratios"], *suggested])
     fields["logo"] = value.get("logo", "auto")
     _, fields["logo"] = brand_settings(fields)
     for key, minval, maxval, default in [("seconds", 1, 14400, 30), ("count", 1, 24, 3)]:
@@ -108,6 +114,8 @@ def validate(value):
         if type(v) is not bool:
             raise ValueError(f"Invalid {key}.")
         fields[key] = v
+    if re.search(r"\b(?:no|without|disable|turn off)\s+(?:burned[- ]in\s+|animated\s+)?(?:captions|subtitles)\b", fields["brief"], re.I):
+        fields["captions"] = False
     for key, types in [
         ("media", MEDIA),
         ("image", IMAGES | {".fig"}),

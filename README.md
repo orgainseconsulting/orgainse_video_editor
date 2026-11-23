@@ -14,9 +14,13 @@ On a fresh Windows installation, extract the complete source release and double-
 powershell -NoProfile -ExecutionPolicy Bypass -File .\setup-windows.ps1 -ProductionExtras
 ```
 
-The **Local AI** planner uses a model imported from GGUF into Ollama at `127.0.0.1:11434`. Start Ollama before using that planner. A job reports an unavailable model and can be reopened with **Script template**. Supplied material, narration, subtitles, edit plans and exports stay in local storage. New external URLs need connectivity during capture. Cached screenshots and local files can be reused offline.
+The **Local AI** planner uses a model imported from GGUF into Ollama at `127.0.0.1:11434`. Start Ollama for model-directed editing. With a supplied script, the paragraph template can complete an edit when the model is unavailable. A brief without a script requires the selected planner. Supplied material, narration, subtitles, edit plans and exports stay in local storage. New external URLs need connectivity during capture. Cached screenshots and local files can be reused offline.
 
 ### Create a video
+
+Add a source recording, website URL or screenshot. Paste the narration script and put the editing instructions in their own field. Click **Render video**. The studio derives a production name, narrates the script with a local Windows voice, applies the selected edits and returns a playable MP4 with a **Save MP4** link. Script paragraphs give you numbered scenes. An explicit time range without a scene number uses seconds from the start of the finished video.
+
+For example, enter `Use Word reveal in scene 1. Use Product focus in scene 2. Add the Tape label effect reading "In review" from 1 to 3 seconds. Use Retro Typer captions. Export landscape and portrait.` Product focus uses the supplied website or screenshot. With **From editing instructions** selected, the editor exports both requested layouts. If the local planning model is unavailable, a supplied script can still render through the paragraph template with named edits. The job records the fallback in its planner log.
 
 Choose **Create a video**, enter a scene brief, add the sources you want, and click **Render video**. For example, “Open on the product page. Follow with a title card reading Built for teams. End on the founder.” The planner chooses from the available footage, screenshot and title cards. Add a narration script for a Windows voice. Separate paragraphs to mark scene boundaries. The spoken track sets the duration of narrated scenes. A footage-only job can keep the source sound.
 

@@ -18,6 +18,8 @@ Use **Editable brand scenes** for your own headline, copy, artwork and responsiv
 
 The Local AI planner can select a named graphic or effect from a scene brief. For example, “Use Word reveal with the reject stamp effect” shortlists those two items for the model. For a cinematic or animated launch brief, it can also use the responsive brand scenes. A Product focus scene requires a supplied screen. Manual storyboard selections take precedence over the planner.
 
+A scene number, opening or closing cue anchors a named graphic or effect. An unscoped time range crosses scene boundaries in final video seconds. A scoped range uses seconds from the start of its scene. Named caption styles, small or large animated captions, and top or bottom placement can also be specified in the instructions. The saved edit plan contains the applied layer windows and caption styling.
+
 ### Scene timing and recording cuts
 
 The following scene applies two ordered effects. Times are seconds measured from the start of this scene. Omitting the window applies the effect throughout the scene.

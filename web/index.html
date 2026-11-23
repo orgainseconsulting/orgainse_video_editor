@@ -39,21 +39,6 @@
                 Cut into shorts
               </button>
             </div>
-            <label
-              >Production name<input
-                id="title"
-                maxlength="120"
-                placeholder="Founder walkthrough"
-            /></label>
-            <label id="brieflabel"
-              ><span>Scene brief</span
-              ><textarea
-                id="brief"
-                rows="3"
-                maxlength="4000"
-                placeholder="Open with the founder, cut to the product screen, then end on the call to action."
-              ></textarea>
-            </label>
             <div class="paired">
               <label
                 >Source recording<input
@@ -88,6 +73,9 @@
                 ></textarea>
               </label>
             </div>
+            <label id="brieflabel"><span>Editing instructions</span>
+              <textarea id="brief" rows="3" maxlength="4000" placeholder="Use Product focus in scene 1. Add the Tape label effect from 1 to 3 seconds. Use Retro Typer captions."></textarea>
+            </label>
             <div class="library-tools">
               <button type="button" id="browseLibrary" class="secondary">Browse effects &amp; motion</button>
               <div id="projectLayers"></div>
@@ -95,6 +83,12 @@
             <details id="settings">
               <summary>Export settings</summary>
               <div class="settings">
+            <label
+              >Production name (optional)<input
+                id="title"
+                maxlength="120"
+                placeholder="Use the script or website name"
+            /></label>
                 <label class="create-only"
                   >Recorded voiceover<input
                     type="file"
@@ -159,6 +153,7 @@
                 >
                 <label
                   >Format<select id="ratio">
+                    <option value="auto">From editing instructions</option>
                     <option>16:9</option>
                     <option>9:16</option>
                     <option>4:5</option>

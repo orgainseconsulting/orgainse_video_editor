@@ -18,6 +18,7 @@ from site_sections import sections
 from faces import face_track, tracked_filter
 from branding import BRAND_DIR, CATALOG as BRANDS, choose, brand_settings, composite, framing_filter
 from planner import make_plan
+from edit_directions import apply_layers, caption_choice, caption_layout, plan_graphics, read_directions
 from figma_source import frame_ref, fetch_frame, local_fig_preview
 from speech import captions, choose_shorts, clipped, srt, transcript_for, tts
 
@@ -185,6 +186,7 @@ def encode(
     graphic=None,
     effects=(),
     subhead="",
+    caption_options=None,
 ):
     frames = max(1, round(length * 30))
     if graphic:
@@ -323,7 +325,7 @@ def encode(
         target = folder / (name + ".mp4")
         captioned = folder / "captioned.mp4"
         render_browser(folder, browser(), dict(id=caption_style, width=w, height=h, frames=frames,
-                       words=caption_words(cues), input=str(target), output=str(captioned)))
+                       words=caption_words(cues), input=str(target), output=str(captioned), **(caption_options or {})))
         os.replace(captioned, target)
     if track is not None:
         applied["faceSamples"] = len(track)
@@ -430,7 +432,9 @@ def build(request, folder, report):
         captured[image] = hashlib.sha256(image.read_bytes()).hexdigest()
     if video:
         captured[video] = signature([request["media"], request["keep"]]) if cutmap else video.name
-    style = request.get("captionStyle", "boxed")
+    directions = read_directions(request["brief"]) if not request.get("scenes") and not short else []
+    style = caption_choice(directions, request.get("captionStyle", "boxed"))
+    caption_options = caption_layout(request["brief"]) if style in CAPTIONS else {}
     treatment = request.get("treatment", "standard")
     plan_file = folder / "rough-cut.json"
     if plan_file.exists():
@@ -457,6 +461,18 @@ def build(request, folder, report):
         shots = request.get("scenes") or make_plan(
             dict(request, siteSections=site), available, total, folder / "planner.log"
         )
+        if not request.get("scenes") and request["script"] and ("footage" in available or "website" in available):
+            if all(shot["visual"] == "title" for shot in shots) and not any(
+                word in request["brief"].lower() for word in ("title card", "title only", "title-only", "text only", "text-only")
+            ):
+                for i, shot in enumerate(shots):
+                    shot["visual"] = "footage" if video else "website"
+                    if video:
+                        shot["start"] = total * i / len(shots)
+                    elif site:
+                        shot["image"] = site[i % len(site)]["image"]
+        if directions:
+            plan_graphics(shots, directions, bool(image), request["title"], site, bool(video))
         if not request.get("scenes") and not request["script"] and not narration and video:
             scale = min(1, total / sum(s["seconds"] for s in shots))
             for s in shots:
@@ -514,6 +530,10 @@ def build(request, folder, report):
             lines = captions(clipped(original, start, start + length)) if picture and picture == video else []
         timeline.extend((elapsed + a, elapsed + b, t) for a, b, t in lines)
         title = s.get("headline", "")
+        if s["visual"] == "footage" and request["captions"] and voice and title.strip().casefold() == s["voice"].strip().casefold():
+            if not any(word in request["brief"].lower() for word in ("headline", "on-screen text", "title card")):
+                title = ""
+                s["headline"] = ""
         if s["visual"] == "title" and not title:
             title = request["title"]
         burned = [] if picture is None and title == s.get("voice") and not narration else lines
@@ -526,6 +546,8 @@ def build(request, folder, report):
                     layer[key] *= length / s["seconds"]
         s.update(start=start, seconds=length, outputStart=elapsed)
         elapsed = next_end
+    if directions:
+        apply_layers(shots, directions)
     outputs, layout_plans = [], {}
     for n, ratio in enumerate(layouts):
         w, h = dimensions(ratio, request["draft"])
@@ -588,6 +610,8 @@ def build(request, folder, report):
             ]
             graphic = shots[i].get("graphic")
             effects = [*request.get("effects", []), *shots[i].get("effects", [])]
+            if caption_options:
+                spec.append(caption_options)
             if graphic or effects or style in CAPTIONS:
                 spec.extend(["upstream-fx-v4", graphic, effects, shots[i].get("subhead","")])
             mark, reused = cached_scene(
@@ -614,6 +638,7 @@ def build(request, folder, report):
                     graphic,
                     effects,
                     shots[i].get("subhead",""),
+                    caption_options,
                 ),
                 lambda path: verify(path, w, h, length),
             )
@@ -658,6 +683,9 @@ def build(request, folder, report):
             {
                 "mode": request["mode"],
                 "source": request["media"],
+                "captionStyle": style,
+                "captionLayout": caption_options,
+                "captions": request["captions"],
                 **({"sourceTimeMap": cutmap} if cutmap else {}),
                 key: layout_plans[layouts[0]],
                 "layouts": layout_plans,
