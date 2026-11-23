@@ -134,14 +134,18 @@ def plan_graphics(shots, directions, has_screen, title, pages=(), has_footage=Fa
                     if d.text or not headline or misplaced:
                         shot["headline"] = (d.text or re.split(r"(?<=[.!?])\s+", voice, 1)[0] or title)[:160]
                 if d.item == "StudioProductFocus" and pages:
-                    terms = set(re.findall(r"[a-z]{4,}", (d.hint + " " + shot.get("voice", "")).lower()))
-                    terms -= {"show", "with", "website", "product", "focus", "from", "that", "scene", "section", "about", "using", "then", "this", "your"}
+                    hint = normalize(re.sub(r"QUOTED\d+", " ", d.hint))
+                    stopwords = {"use", "show", "with", "the", "website", "product", "focus", "from", "that", "scene", "section", "about", "using", "then", "this", "your", "reading"}
+                    hint_words = {w for w in hint.split() if w.isalpha() and len(w) >= 3} - stopwords
+                    voice_words = set(normalize(shot.get("voice", "")).split()) - stopwords
                     def relevance(page):
                         heading = set(normalize(page["heading"]).split())
                         body = set(normalize(page.get("summary", "")).split())
-                        return (3 * len(terms & heading) + len(terms & body), page["image"] == shot.get("image"))
+                        return (len(hint_words & heading), len(hint_words & body),
+                                3 * len(voice_words & heading) + len(voice_words & body),
+                                page["image"] == shot.get("image"))
                     best = max(pages, key=relevance)
-                    if relevance(best)[0] > 0:
+                    if any(relevance(best)[:3]):
                         shot["image"] = best["image"]
                 used.add(i)
 

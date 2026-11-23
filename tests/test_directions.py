@@ -51,6 +51,16 @@ class ScriptedEditingTests(unittest.TestCase):
         self.assertEqual(self.shots[1]["image"], "risks.png")
         self.assertEqual(self.shots[1]["headline"], "Review risks in one workspace.")
 
+    def test_explicit_section_name_takes_priority_over_script_vocabulary(self):
+        self.shots[1].update(image="home.png", voice="Give teams a delivery workspace built for software or business operations.")
+        pages = [
+            dict(heading="Govern the delivery", summary=self.shots[1]["voice"], image="home.png"),
+            dict(heading="One platform. Two operating experiences.", summary="", image="experiences.png"),
+        ]
+        brief = 'Use Product focus in scene 2 reading "Two ways to run delivery." with the website section about the two operating experiences.'
+        plan_graphics(self.shots, read_directions(brief), True, "Demo", pages)
+        self.assertEqual(self.shots[1]["image"], "experiences.png")
+
     def test_numbered_directions_can_divide_one_script_paragraph(self):
         request = validate(dict(script="See the work. Manage risks. Request a pilot.", brief="Use Brand close in scene 3.", planner="template"))
         shots = make_plan(request, ["title"], 0, None)
