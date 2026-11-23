@@ -136,11 +136,70 @@ def verify(output, selected, ratios):
     return not failures
 
 
+def verify_options(output, selected, ratios):
+    """Compare each selectable look and card upload with the matching default render."""
+    import hashlib
+    import core
+    from PIL import Image, ImageDraw
+    from unittest.mock import patch
+
+    fixtures = output / "option-checks"
+    fixtures.mkdir(exist_ok=True)
+    assets = fixtures / "assets"
+    assets.mkdir(exist_ok=True)
+    cards = []
+    for number, colour in enumerate(("#ffe522", "#ce096b", "#3ee889")):
+        image = Image.new("RGB", (320, 250), colour)
+        draw = ImageDraw.Draw(image)
+        draw.rectangle((12, 12, 300, 230), outline="black", width=12)
+        draw.line((20, 220, 300, 20), fill="navy", width=21)
+        sample = fixtures / f"card-{number}.png"
+        image.save(sample)
+        asset = hashlib.sha256(sample.read_bytes()).hexdigest()[:32] + ".png"
+        sample.replace(assets / asset)
+        cards.append(asset)
+
+    def check(row):
+        ratio, key, label, layer = row
+        work = fixtures / ratio / key / label
+        work.mkdir(parents=True, exist_ok=True)
+        clip = work / "clip.mp4"
+        result = {"ratio": ratio, "id": key, "option": label}
+        try:
+            render_layers(work, output / ratio / "standard.mp4", clip, [layer], 2.4)
+            baseline = pixels(output / ratio / key / "clip.mp4")
+            inspect(clip, SIZES[ratio], len(baseline), baseline)
+            return dict(result, passed=True)
+        except Exception as err:
+            return dict(result, passed=False, error=str(err)[-1000:])
+
+    cases = []
+    for ratio in ratios:
+        for key in selected:
+            for look in BY_ID[key].get("looks", []):
+                cases.append((ratio, key, look, {"id": key, "look": look}))
+            if BY_ID[key].get("cardImages"):
+                cases.append((ratio, key, "cards", {"id": key, "cards": cards}))
+    # The real source resolver uses the test run's isolated asset library.
+    with patch.object(core, "DATA", fixtures), ThreadPoolExecutor(2) as workers:
+        results = list(workers.map(check, cases))
+    failures = [row for row in results if not row["passed"]]
+    save(fixtures / "results.json", results)
+    print(f"{len(results)-len(failures)} of {len(results)} option checks passed", flush=True)
+    for row in failures:
+        print(row, flush=True)
+    return not failures
+
+
 if __name__=="__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--only", nargs="+", choices=list(BY_ID))
     parser.add_argument("--formats", nargs="+", choices=list(SIZES), default=list(SIZES))
+    parser.add_argument("--options-from", type=Path, metavar="RUN_DIRECTORY",
+                        help="Test uploaded images and alternate looks against a completed run")
     args = parser.parse_args()
+    if args.options_from:
+        sys.exit(0 if verify_options(args.options_from.resolve(), args.only or list(BY_ID), args.formats) else 1)
     LOCAL.mkdir(exist_ok=True)
     output = Path(tempfile.mkdtemp(prefix="visual-verification-", dir=LOCAL))
     print(output, flush=True)

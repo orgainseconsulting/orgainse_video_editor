@@ -618,6 +618,8 @@ def build(request, folder, report):
                 spec.append(caption_options)
             if graphic or effects or style in CAPTIONS:
                 spec.extend(["upstream-fx-v4", graphic, effects, shots[i].get("subhead","")])
+                if any(e["id"] == "timeline" and e.get("cards") for e in effects):
+                    spec.append("timeline-card-strip-v1")
             mark, reused = cached_scene(
                 folder,
                 name,

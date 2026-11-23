@@ -22,6 +22,31 @@ spec.loader.exec_module(fx)
 np, cv2 = fx.np, fx.cv2
 
 
+def timeline_cards(ctx, layer):
+    """Put supplied thumbnails on the first track of the pinned red timeline."""
+    from PIL import ImageOps
+    width, height = int(ctx.W * .9), int(ctx.H * .19)
+    track_top = ctx.H * .755 + (1 - fx.ease_out((ctx.lt - .1) / .35)) * ctx.H * .3 + height * .27
+    track_w, track_h = max(1, round(width * .92)), max(2, round(height * .17))
+    cell_w = max(1, track_w // len(layer.cards))
+
+    def filmstrip():
+        strip = fx.Image.new("RGBA", (track_w, track_h))
+        for index, card in enumerate(layer.cards):
+            thumbnail = ImageOps.fit(card.convert("RGB"), (max(1, cell_w - 2), track_h))
+            strip.paste(thumbnail, (index * cell_w, 0))
+        return strip
+
+    strip = fx.cached(layer, "custom-timeline-strip", filmstrip)
+    left = (ctx.W - width) / 2 + width * .04
+    alpha = fx.fade(ctx, layer)
+    fx.comp(ctx, strip, left, track_top, alpha, guard=True)
+    playhead = fx.cached(layer, "custom-timeline-cursor",
+                         lambda: fx.Image.new("RGBA", (max(2, ctx.W // 300), track_h), "white"))
+    position = fx.clamp(ctx.lt / (layer.d * .95))
+    fx.comp(ctx, playhead, left + (track_w - playhead.width) * position, track_top, alpha, guard=True)
+
+
 def apply_effect(ctx, layer):
     target = ctx
     # The original tape placement caps the chest at 68% of frame height. In vertical
@@ -32,6 +57,8 @@ def apply_effect(ctx, layer):
         target.img, target.m = ctx.img[top:], ctx.m[top:]
         target.H, target.fy = ctx.H - top, ctx.fy - top
     fx.EFFECTS[layer.name][0](target, layer)
+    if layer.name == "timeline" and getattr(layer, "custom_cards", False):
+        timeline_cards(target, layer)
 
 
 def render(job):
@@ -43,7 +70,8 @@ def render(job):
     # Capture representative card images without retaining the source video in memory.
     if any(e.name in fx.CARD_FX for e in layers):
         thumbs = []
-        if any(e.name in fx.CARD_FX and not entry.get("cards") for e, entry in zip(layers, job["layers"])):
+        if any(e.name in fx.CARD_FX and e.name != "timeline" and not entry.get("cards")
+               for e, entry in zip(layers, job["layers"])):
             reader = cv2.VideoCapture(path)
             try:
                 for j in range(10):
@@ -58,6 +86,7 @@ def render(job):
         for e, entry in zip(layers, job["layers"]):
             if e.name in fx.CARD_FX:
                 e.cards = []
+                e.custom_cards = bool(entry.get("cards"))
                 for image_path in entry.get("cards", []):
                     with fx.Image.open(image_path) as original:
                         card = original.convert("RGB")
